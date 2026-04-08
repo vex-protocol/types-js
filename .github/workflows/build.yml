@@ -53,6 +53,9 @@ jobs:
             - name: API Surface
               run: npm run lint:api
 
+            - name: Specs Drift Detection
+              run: npm run specs:check
+
             - name: Lint package.json
               run: npx npm-package-json-lint .
 

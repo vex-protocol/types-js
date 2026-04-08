@@ -45,6 +45,7 @@
         "openapi": "npx tsx scripts/generate-openapi.ts",
         "asyncapi": "npx tsx scripts/generate-asyncapi.ts",
         "specs": "npm run openapi && npm run asyncapi",
+        "specs:check": "npm run specs && git diff --exit-code openapi.json asyncapi.json",
         "test:types": "tsd",
         "prepare": "husky"
     },
