@@ -27,7 +27,6 @@
         "isolatedModules": true,
         "verbatimModuleSyntax": true,
         "erasableSyntaxOnly": true,
-        "isolatedDeclarations": true,
         "forceConsistentCasingInFileNames": true,
 
         "resolveJsonModule": true,
