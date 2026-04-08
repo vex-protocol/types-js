@@ -1,8 +1,12 @@
 node_modules
-./dist
 dist
 **/*.log
 .env
 *.tgz
+
+# Wrong lockfiles / package managers
 yarn.lock
+pnpm-lock.yaml
+
+# Verdaccio writes registry overrides here
 .npmrc

@@ -1,44 +1,17 @@
-import type nacl from "tweetnacl";
-
-// ==========================================
-// CRYPTO TYPES
-// ==========================================
-
-export interface IXKeyRing {
-    identityKeys: nacl.BoxKeyPair;
-    ephemeralKeys: nacl.BoxKeyPair;
-    preKeys: IPreKeysCrypto;
-}
-
-export interface IPreKeysCrypto {
-    keyPair: nacl.BoxKeyPair;
-    signature: Uint8Array;
-    index?: number;
-}
-
-export interface ISessionCrypto {
-    sessionID: string;
-    userID: string;
-    mode: "initiator" | "receiver";
-    SK: Uint8Array;
-    publicKey: Uint8Array;
-    fingerprint: Uint8Array;
-    lastUsed: Date;
-}
-
 // ==========================================
 // HTTP API TYPES
 // ==========================================
 
-export enum TokenScopes {
-    Register,
-    File,
-    Avatar,
-    Device,
-    Invite,
-    Emoji,
-    Connect,
-}
+export const TokenScopes = {
+    Register: 0,
+    File: 1,
+    Avatar: 2,
+    Device: 3,
+    Invite: 4,
+    Emoji: 5,
+    Connect: 6,
+} as const;
+export type TokenScopes = (typeof TokenScopes)[keyof typeof TokenScopes];
 
 export interface IActionToken {
     key: string;
@@ -76,16 +49,19 @@ export interface IRegistrationPayload extends IDevicePayload {
 // WEBSOCKET TYPES (Network Layer)
 // ==========================================
 
-export enum SocketAuthErrors {
-    BadSignature,
-    InvalidToken,
-    UserNotRegistered,
-}
+export const SocketAuthErrors = {
+    BadSignature: 0,
+    InvalidToken: 1,
+    UserNotRegistered: 2,
+} as const;
+export type SocketAuthErrors =
+    (typeof SocketAuthErrors)[keyof typeof SocketAuthErrors];
 
-export enum MailType {
-    initial,
-    subsequent,
-}
+export const MailType = {
+    initial: 0,
+    subsequent: 1,
+} as const;
+export type MailType = (typeof MailType)[keyof typeof MailType];
 
 export interface IBaseMsg {
     transmissionID: string;
@@ -93,13 +69,13 @@ export interface IBaseMsg {
 }
 
 export interface ISucessMsg extends IBaseMsg {
-    data: any;
+    data: unknown;
     timestamp?: string;
 }
 
 export interface IErrMsg extends IBaseMsg {
     error: string;
-    data?: any;
+    data?: unknown;
 }
 
 export interface IChallMsg extends IBaseMsg {
@@ -119,12 +95,12 @@ export interface IReceiptMsg extends IBaseMsg {
 export interface IResourceMsg extends IBaseMsg {
     resourceType: string;
     action: string;
-    data?: any;
+    data?: unknown;
 }
 
 export interface INotifyMsg extends IBaseMsg {
     event: string;
-    data?: any;
+    data?: unknown;
 }
 
 // Resources attached to success messages
