@@ -1,7 +1,12 @@
 import { z } from "zod/v4";
 
-/** Uint8Array schema compatible with both ArrayBuffer and ArrayBufferLike sources. */
-export const uint8 = z.custom<Uint8Array<ArrayBufferLike>>(
+/**
+ * Uint8Array schema. Uses `z.custom` instead of `z.instanceof` to avoid
+ * the `Uint8Array<ArrayBuffer>` vs `Uint8Array<ArrayBufferLike>` generic
+ * mismatch between TS 6.x's strict generic inference and tweetnacl/nacl.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const uint8 = z.custom<Uint8Array<any>>(
     (val) => val instanceof Uint8Array,
 );
 
