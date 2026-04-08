@@ -41,6 +41,18 @@ jobs:
             - name: Type Coverage
               run: npx type-coverage --at-least 99 --strict --ignore-catch
 
+            - name: Type Tests
+              run: npm run test:types
+
+            - name: Package Lint
+              run: npm run lint:pkg
+
+            - name: Type Resolution
+              run: npm run lint:types
+
+            - name: API Surface
+              run: npm run lint:api
+
             - name: Lint package.json
               run: npx npm-package-json-lint .
 
