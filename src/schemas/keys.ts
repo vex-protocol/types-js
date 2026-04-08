@@ -73,10 +73,7 @@ export const mailWS = z
         cipher: uint8.describe("Encrypted message content"),
         extra: uint8.describe("Extra metadata"),
         forward: z.boolean().describe("Whether this is a multi-device forward"),
-        group: z
-            .instanceof(Uint8Array)
-            .nullable()
-            .describe("Channel ID for group messages"),
+        group: uint8.nullable().describe("Channel ID for group messages"),
         mailID: z.string().describe("Unique mail identifier"),
         mailType: z.number().describe("Mail type (0=initial, 1=subsequent)"),
         nonce: uint8.describe("Encryption nonce"),
