@@ -26,8 +26,11 @@ export {
     respMsg,
     server,
     sessionSQL,
+    MailType,
+    SocketAuthErrors,
     storedCredentials,
     successMsg,
+    TokenScopes,
     user,
     userRecord,
 } from "./schemas/index.js";
