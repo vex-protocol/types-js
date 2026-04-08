@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 
-/** Uint8Array schema that avoids the ArrayBuffer/ArrayBufferLike generic mismatch. */
-export const uint8 = z.custom<Uint8Array>(
+/** Uint8Array schema compatible with both ArrayBuffer and ArrayBufferLike sources. */
+export const uint8 = z.custom<Uint8Array<ArrayBufferLike>>(
     (val) => val instanceof Uint8Array,
 );
 
