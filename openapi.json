@@ -1,0 +1,1505 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Vex Protocol API",
+    "version": "1.0.0",
+    "description": "REST API for the Vex encrypted chat platform. Messages are serialized using msgpack.",
+    "license": {
+      "name": "AGPL-3.0-or-later"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.vex.wtf",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:16777",
+      "description": "Local development"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "lastSeen": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last activity timestamp"
+          },
+          "userID": {
+            "type": "string",
+            "description": "Unique user identifier"
+          },
+          "username": {
+            "type": "string",
+            "description": "Display username"
+          }
+        },
+        "required": [
+          "lastSeen",
+          "userID",
+          "username"
+        ],
+        "description": "Public user profile"
+      },
+      "Device": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean",
+            "description": "Soft-delete flag"
+          },
+          "deviceID": {
+            "type": "string",
+            "description": "Unique device identifier"
+          },
+          "lastLogin": {
+            "type": "string",
+            "description": "Last login timestamp"
+          },
+          "name": {
+            "type": "string",
+            "description": "Device display name"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner user ID"
+          },
+          "signKey": {
+            "type": "string",
+            "description": "Ed25519 signing public key (hex)"
+          }
+        },
+        "required": [
+          "deleted",
+          "deviceID",
+          "lastLogin",
+          "name",
+          "owner",
+          "signKey"
+        ],
+        "description": "Device registration record"
+      },
+      "Server": {
+        "type": "object",
+        "properties": {
+          "icon": {
+            "type": "string",
+            "description": "Server icon file ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Server display name"
+          },
+          "serverID": {
+            "type": "string",
+            "description": "Unique server identifier"
+          }
+        },
+        "required": [
+          "name",
+          "serverID"
+        ],
+        "description": "Chat server"
+      },
+      "Channel": {
+        "type": "object",
+        "properties": {
+          "channelID": {
+            "type": "string",
+            "description": "Unique channel identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Channel display name"
+          },
+          "serverID": {
+            "type": "string",
+            "description": "Parent server ID"
+          }
+        },
+        "required": [
+          "channelID",
+          "name",
+          "serverID"
+        ],
+        "description": "Server channel"
+      },
+      "Permission": {
+        "type": "object",
+        "properties": {
+          "permissionID": {
+            "type": "string",
+            "description": "Unique permission identifier"
+          },
+          "powerLevel": {
+            "type": "number",
+            "description": "Permission level (0-100)"
+          },
+          "resourceID": {
+            "type": "string",
+            "description": "Resource being accessed"
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "Resource type (e.g. server)"
+          },
+          "userID": {
+            "type": "string",
+            "description": "Grantee user ID"
+          }
+        },
+        "required": [
+          "permissionID",
+          "powerLevel",
+          "resourceID",
+          "resourceType",
+          "userID"
+        ],
+        "description": "Permission grant"
+      },
+      "Invite": {
+        "type": "object",
+        "properties": {
+          "expiration": {
+            "type": "string",
+            "description": "Expiration datetime"
+          },
+          "inviteID": {
+            "type": "string",
+            "description": "Unique invite identifier"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Inviter user ID"
+          },
+          "serverID": {
+            "type": "string",
+            "description": "Target server ID"
+          }
+        },
+        "required": [
+          "expiration",
+          "inviteID",
+          "owner",
+          "serverID"
+        ],
+        "description": "Server invitation"
+      },
+      "Emoji": {
+        "type": "object",
+        "properties": {
+          "emojiID": {
+            "type": "string",
+            "description": "Emoji identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Emoji display name"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Server ID that owns this emoji"
+          }
+        },
+        "required": [
+          "emojiID",
+          "name",
+          "owner"
+        ],
+        "description": "Custom server emoji"
+      },
+      "FileSQL": {
+        "type": "object",
+        "properties": {
+          "fileID": {
+            "type": "string",
+            "description": "File identifier"
+          },
+          "nonce": {
+            "type": "string",
+            "description": "Unique nonce identifier"
+          },
+          "owner": {
+            "type": "string",
+            "description": "File owner user ID"
+          }
+        },
+        "required": [
+          "fileID",
+          "nonce",
+          "owner"
+        ],
+        "description": "File database record"
+      },
+      "ActionToken": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Token value"
+          },
+          "scope": {
+            "type": "number",
+            "description": "Token scope"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Token creation time"
+          }
+        },
+        "required": [
+          "key",
+          "scope",
+          "time"
+        ],
+        "description": "Scoped action token with TTL"
+      },
+      "DevicePayload": {
+        "type": "object",
+        "properties": {
+          "deviceName": {
+            "type": "string",
+            "description": "Device display name"
+          },
+          "preKey": {
+            "type": "string",
+            "description": "Pre-key public key (hex)"
+          },
+          "preKeyIndex": {
+            "type": "number",
+            "description": "Pre-key index"
+          },
+          "preKeySignature": {
+            "type": "string",
+            "description": "Pre-key signature (hex)"
+          },
+          "signed": {
+            "type": "string",
+            "description": "Signed registration data"
+          },
+          "signKey": {
+            "type": "string",
+            "description": "Ed25519 public signing key (hex)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Account username"
+          }
+        },
+        "required": [
+          "deviceName",
+          "preKey",
+          "preKeyIndex",
+          "preKeySignature",
+          "signed",
+          "signKey",
+          "username"
+        ],
+        "description": "Device registration payload"
+      },
+      "RegistrationPayload": {
+        "type": "object",
+        "properties": {
+          "deviceName": {
+            "type": "string",
+            "description": "Device display name"
+          },
+          "preKey": {
+            "type": "string",
+            "description": "Pre-key public key (hex)"
+          },
+          "preKeyIndex": {
+            "type": "number",
+            "description": "Pre-key index"
+          },
+          "preKeySignature": {
+            "type": "string",
+            "description": "Pre-key signature (hex)"
+          },
+          "signed": {
+            "type": "string",
+            "description": "Signed registration data"
+          },
+          "signKey": {
+            "type": "string",
+            "description": "Ed25519 public signing key (hex)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Account username"
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password"
+          }
+        },
+        "required": [
+          "deviceName",
+          "preKey",
+          "preKeyIndex",
+          "preKeySignature",
+          "signed",
+          "signKey",
+          "username",
+          "password"
+        ],
+        "description": "User registration payload"
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/auth": {
+      "post": {
+        "summary": "Login with username and password",
+        "requestBody": {
+          "content": {
+            "application/msgpack": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "lastSeen": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Last activity timestamp"
+                        },
+                        "userID": {
+                          "type": "string",
+                          "description": "Unique user identifier"
+                        },
+                        "username": {
+                          "type": "string",
+                          "description": "Display username"
+                        }
+                      },
+                      "required": [
+                        "lastSeen",
+                        "userID",
+                        "username"
+                      ],
+                      "description": "Public user profile"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "user"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/auth/device": {
+      "post": {
+        "summary": "Request device auth challenge",
+        "requestBody": {
+          "content": {
+            "application/msgpack": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "deviceID": {
+                    "type": "string"
+                  },
+                  "signKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "deviceID",
+                  "signKey"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Challenge issued",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "challenge": {
+                      "type": "string"
+                    },
+                    "challengeID": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "challenge",
+                    "challengeID"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/device/verify": {
+      "post": {
+        "summary": "Verify device auth challenge",
+        "requestBody": {
+          "content": {
+            "application/msgpack": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "challengeID": {
+                    "type": "string"
+                  },
+                  "signed": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "challengeID",
+                  "signed"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Device authenticated",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "lastSeen": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Last activity timestamp"
+                        },
+                        "userID": {
+                          "type": "string",
+                          "description": "Unique user identifier"
+                        },
+                        "username": {
+                          "type": "string",
+                          "description": "Display username"
+                        }
+                      },
+                      "required": [
+                        "lastSeen",
+                        "userID",
+                        "username"
+                      ],
+                      "description": "Public user profile"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "user"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "summary": "Register a new user account",
+        "requestBody": {
+          "content": {
+            "application/msgpack": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "deviceName": {
+                    "type": "string",
+                    "description": "Device display name"
+                  },
+                  "preKey": {
+                    "type": "string",
+                    "description": "Pre-key public key (hex)"
+                  },
+                  "preKeyIndex": {
+                    "type": "number",
+                    "description": "Pre-key index"
+                  },
+                  "preKeySignature": {
+                    "type": "string",
+                    "description": "Pre-key signature (hex)"
+                  },
+                  "signed": {
+                    "type": "string",
+                    "description": "Signed registration data"
+                  },
+                  "signKey": {
+                    "type": "string",
+                    "description": "Ed25519 public signing key (hex)"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Account username"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Account password"
+                  }
+                },
+                "required": [
+                  "deviceName",
+                  "preKey",
+                  "preKeyIndex",
+                  "preKeySignature",
+                  "signed",
+                  "signKey",
+                  "username",
+                  "password"
+                ],
+                "description": "User registration payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registration successful",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lastSeen": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Last activity timestamp"
+                    },
+                    "userID": {
+                      "type": "string",
+                      "description": "Unique user identifier"
+                    },
+                    "username": {
+                      "type": "string",
+                      "description": "Display username"
+                    }
+                  },
+                  "required": [
+                    "lastSeen",
+                    "userID",
+                    "username"
+                  ],
+                  "description": "Public user profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/whoami": {
+      "post": {
+        "summary": "Get current session info",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current session",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exp": {
+                      "type": "number"
+                    },
+                    "token": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "lastSeen": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Last activity timestamp"
+                        },
+                        "userID": {
+                          "type": "string",
+                          "description": "Unique user identifier"
+                        },
+                        "username": {
+                          "type": "string",
+                          "description": "Display username"
+                        }
+                      },
+                      "required": [
+                        "lastSeen",
+                        "userID",
+                        "username"
+                      ],
+                      "description": "Public user profile"
+                    }
+                  },
+                  "required": [
+                    "exp",
+                    "token",
+                    "user"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/goodbye": {
+      "post": {
+        "summary": "Logout (invalidate token)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out"
+          }
+        }
+      }
+    },
+    "/token/{tokenType}": {
+      "get": {
+        "summary": "Request an action token",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "register",
+                "file",
+                "avatar",
+                "device",
+                "invite",
+                "emoji",
+                "connect"
+              ]
+            },
+            "required": true,
+            "name": "tokenType",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token issued",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "description": "Token value"
+                    },
+                    "scope": {
+                      "type": "number",
+                      "description": "Token scope"
+                    },
+                    "time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Token creation time"
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "scope",
+                    "time"
+                  ],
+                  "description": "Scoped action token with TTL"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "summary": "Get user profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lastSeen": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Last activity timestamp"
+                    },
+                    "userID": {
+                      "type": "string",
+                      "description": "Unique user identifier"
+                    },
+                    "username": {
+                      "type": "string",
+                      "description": "Display username"
+                    }
+                  },
+                  "required": [
+                    "lastSeen",
+                    "userID",
+                    "username"
+                  ],
+                  "description": "Public user profile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/{id}/devices": {
+      "get": {
+        "summary": "List devices for a user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device list",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "deleted": {
+                        "type": "boolean",
+                        "description": "Soft-delete flag"
+                      },
+                      "deviceID": {
+                        "type": "string",
+                        "description": "Unique device identifier"
+                      },
+                      "lastLogin": {
+                        "type": "string",
+                        "description": "Last login timestamp"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Device display name"
+                      },
+                      "owner": {
+                        "type": "string",
+                        "description": "Owner user ID"
+                      },
+                      "signKey": {
+                        "type": "string",
+                        "description": "Ed25519 signing public key (hex)"
+                      }
+                    },
+                    "required": [
+                      "deleted",
+                      "deviceID",
+                      "lastLogin",
+                      "name",
+                      "owner",
+                      "signKey"
+                    ],
+                    "description": "Device registration record"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}/servers": {
+      "get": {
+        "summary": "List servers for a user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server list",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "icon": {
+                        "type": "string",
+                        "description": "Server icon file ID"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Server display name"
+                      },
+                      "serverID": {
+                        "type": "string",
+                        "description": "Unique server identifier"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "serverID"
+                    ],
+                    "description": "Chat server"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}/permissions": {
+      "get": {
+        "summary": "Get permissions for a user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Permission list",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "permissionID": {
+                        "type": "string",
+                        "description": "Unique permission identifier"
+                      },
+                      "powerLevel": {
+                        "type": "number",
+                        "description": "Permission level (0-100)"
+                      },
+                      "resourceID": {
+                        "type": "string",
+                        "description": "Resource being accessed"
+                      },
+                      "resourceType": {
+                        "type": "string",
+                        "description": "Resource type (e.g. server)"
+                      },
+                      "userID": {
+                        "type": "string",
+                        "description": "Grantee user ID"
+                      }
+                    },
+                    "required": [
+                      "permissionID",
+                      "powerLevel",
+                      "resourceID",
+                      "resourceType",
+                      "userID"
+                    ],
+                    "description": "Permission grant"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/server/{id}": {
+      "get": {
+        "summary": "Get a server",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server details",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "icon": {
+                      "type": "string",
+                      "description": "Server icon file ID"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Server display name"
+                    },
+                    "serverID": {
+                      "type": "string",
+                      "description": "Unique server identifier"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "serverID"
+                  ],
+                  "description": "Chat server"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a server",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server deleted"
+          },
+          "401": {
+            "description": "Insufficient permissions"
+          }
+        }
+      }
+    },
+    "/server/{name}": {
+      "post": {
+        "summary": "Create a server",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "name",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server created",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "icon": {
+                      "type": "string",
+                      "description": "Server icon file ID"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Server display name"
+                    },
+                    "serverID": {
+                      "type": "string",
+                      "description": "Unique server identifier"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "serverID"
+                  ],
+                  "description": "Chat server"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/server/{id}/channels": {
+      "get": {
+        "summary": "List channels in a server",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Channel list",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "channelID": {
+                        "type": "string",
+                        "description": "Unique channel identifier"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Channel display name"
+                      },
+                      "serverID": {
+                        "type": "string",
+                        "description": "Parent server ID"
+                      }
+                    },
+                    "required": [
+                      "channelID",
+                      "name",
+                      "serverID"
+                    ],
+                    "description": "Server channel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a channel",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/msgpack": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Channel created",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "channelID": {
+                      "type": "string",
+                      "description": "Unique channel identifier"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Channel display name"
+                    },
+                    "serverID": {
+                      "type": "string",
+                      "description": "Parent server ID"
+                    }
+                  },
+                  "required": [
+                    "channelID",
+                    "name",
+                    "serverID"
+                  ],
+                  "description": "Server channel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channel/{id}": {
+      "get": {
+        "summary": "Get a channel",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Channel details",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "channelID": {
+                      "type": "string",
+                      "description": "Unique channel identifier"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Channel display name"
+                    },
+                    "serverID": {
+                      "type": "string",
+                      "description": "Parent server ID"
+                    }
+                  },
+                  "required": [
+                    "channelID",
+                    "name",
+                    "serverID"
+                  ],
+                  "description": "Server channel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a channel",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Channel deleted"
+          },
+          "401": {
+            "description": "Insufficient permissions"
+          }
+        }
+      }
+    },
+    "/invite/{inviteID}": {
+      "get": {
+        "summary": "Get invite details",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "inviteID",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invite details",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "expiration": {
+                      "type": "string",
+                      "description": "Expiration datetime"
+                    },
+                    "inviteID": {
+                      "type": "string",
+                      "description": "Unique invite identifier"
+                    },
+                    "owner": {
+                      "type": "string",
+                      "description": "Inviter user ID"
+                    },
+                    "serverID": {
+                      "type": "string",
+                      "description": "Target server ID"
+                    }
+                  },
+                  "required": [
+                    "expiration",
+                    "inviteID",
+                    "owner",
+                    "serverID"
+                  ],
+                  "description": "Server invitation"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invite not found or expired"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Accept an invite",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "inviteID",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invite accepted",
+            "content": {
+              "application/msgpack": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "permissionID": {
+                      "type": "string",
+                      "description": "Unique permission identifier"
+                    },
+                    "powerLevel": {
+                      "type": "number",
+                      "description": "Permission level (0-100)"
+                    },
+                    "resourceID": {
+                      "type": "string",
+                      "description": "Resource being accessed"
+                    },
+                    "resourceType": {
+                      "type": "string",
+                      "description": "Resource type (e.g. server)"
+                    },
+                    "userID": {
+                      "type": "string",
+                      "description": "Grantee user ID"
+                    }
+                  },
+                  "required": [
+                    "permissionID",
+                    "powerLevel",
+                    "resourceID",
+                    "resourceType",
+                    "userID"
+                  ],
+                  "description": "Permission grant"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Server health",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "dbReady": {
+                      "type": "boolean"
+                    },
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "dbReady",
+                    "ok"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {}
+}
