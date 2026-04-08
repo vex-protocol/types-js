@@ -1,4 +1,4 @@
-export { actionToken, type IActionToken, TokenScopes } from "./common.js";
+export { actionToken, type IActionToken, TokenScopes, uint8 } from "./common.js";
 
 export {
     emoji,

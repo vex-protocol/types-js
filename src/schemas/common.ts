@@ -1,5 +1,10 @@
 import { z } from "zod/v4";
 
+/** Uint8Array schema that avoids the ArrayBuffer/ArrayBufferLike generic mismatch. */
+export const uint8 = z.custom<Uint8Array>(
+    (val) => val instanceof Uint8Array,
+);
+
 /** Scoped token types for action tokens. */
 export const TokenScopes = {
     Avatar: 2,

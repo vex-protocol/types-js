@@ -1,5 +1,7 @@
 import { z } from "zod/v4";
 
+import { uint8 } from "./common.js";
+
 /** File upload payload (HTTP). */
 export const filePayload = z
     .object({
@@ -24,7 +26,7 @@ export type IFileSQL = z.infer<typeof fileSQL>;
 /** File response with metadata and data. */
 export const fileResponse = z
     .object({
-        data: z.instanceof(Uint8Array).describe("File binary data"),
+        data: uint8.describe("File binary data"),
         details: fileSQL.describe("File metadata"),
     })
     .describe("File response with metadata");

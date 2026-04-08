@@ -1,5 +1,7 @@
 import { z } from "zod/v4";
 
+import { uint8 } from "./common.js";
+
 /** WebSocket authentication error codes. */
 export const SocketAuthErrors = {
     BadSignature: 0,
@@ -46,7 +48,7 @@ export type IErrMsg = z.infer<typeof errMsg>;
 /** Auth challenge. */
 export const challMsg = baseMsg
     .extend({
-        challenge: z.instanceof(Uint8Array).describe("Challenge nonce bytes"),
+        challenge: uint8.describe("Challenge nonce bytes"),
         type: z.literal("challenge"),
     })
     .describe("Authentication challenge");
@@ -55,7 +57,7 @@ export type IChallMsg = z.infer<typeof challMsg>;
 /** Auth response. */
 export const respMsg = baseMsg
     .extend({
-        signed: z.instanceof(Uint8Array).describe("Signed response bytes"),
+        signed: uint8.describe("Signed response bytes"),
         type: z.literal("response"),
     })
     .describe("Authentication response");

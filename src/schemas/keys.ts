@@ -1,5 +1,7 @@
 import { z } from "zod/v4";
 
+import { uint8 } from "./common.js";
+
 /** X3DH key bundle for session establishment. */
 export const keyBundle = z
     .object({
@@ -68,8 +70,8 @@ export type IPreKeysSQL = z.infer<typeof preKeysSQL>;
 export const mailWS = z
     .object({
         authorID: z.string().describe("Original author user ID"),
-        cipher: z.instanceof(Uint8Array).describe("Encrypted message content"),
-        extra: z.instanceof(Uint8Array).describe("Extra metadata"),
+        cipher: uint8.describe("Encrypted message content"),
+        extra: uint8.describe("Extra metadata"),
         forward: z.boolean().describe("Whether this is a multi-device forward"),
         group: z
             .instanceof(Uint8Array)
@@ -77,7 +79,7 @@ export const mailWS = z
             .describe("Channel ID for group messages"),
         mailID: z.string().describe("Unique mail identifier"),
         mailType: z.number().describe("Mail type (0=initial, 1=subsequent)"),
-        nonce: z.instanceof(Uint8Array).describe("Encryption nonce"),
+        nonce: uint8.describe("Encryption nonce"),
         readerID: z.string().describe("Intended reader user ID"),
         recipient: z.string().describe("Recipient device ID"),
         sender: z.string().describe("Sender device ID"),
