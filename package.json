@@ -11,12 +11,14 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js"
         },
-        "./openapi.json": "./openapi.json"
+        "./openapi.json": "./openapi.json",
+        "./asyncapi.json": "./asyncapi.json"
     },
     "files": [
         "dist",
         "src",
         "openapi.json",
+        "asyncapi.json",
         "LICENSE"
     ],
     "author": "Extra <extrahash@protonmail.com>",
@@ -41,6 +43,8 @@
         "lint:types": "attw --pack . --ignore-rules cjs-resolves-to-esm",
         "lint:api": "api-extractor run --local --verbose",
         "openapi": "npx tsx scripts/generate-openapi.ts",
+        "asyncapi": "npx tsx scripts/generate-asyncapi.ts",
+        "specs": "npm run openapi && npm run asyncapi",
         "test:types": "tsd",
         "prepare": "husky"
     },
@@ -50,6 +54,7 @@
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",
         "@asteasolutions/zod-to-openapi": "^8.5.0",
+        "@asyncapi/parser": "^3.6.0",
         "@changesets/cli": "^2.29.8",
         "@microsoft/api-extractor": "^7.58.1",
         "@types/node": "^24.12.2",
