@@ -3,15 +3,16 @@
  * Verifies exported types and const values are correct.
  * Run with: npx tsd
  */
-import { expectType, expectAssignable } from "tsd";
+import { expectAssignable, expectType } from "tsd";
+
 import {
-    type IUser,
-    type IDevice,
     type IBaseMsg,
+    type IDevice,
     type ISuccessMsg,
-    TokenScopes,
+    type IUser,
     MailType,
     SocketAuthErrors,
+    TokenScopes,
 } from "./index.js";
 
 // ── Const values have correct literal types ─────────────────────────────────
@@ -28,14 +29,14 @@ expectType<1>(SocketAuthErrors.InvalidToken);
 
 // ── Types have correct field types ──────────────────────────────────────────
 
-expectAssignable<IUser>({ userID: "a", username: "b", lastSeen: new Date() });
+expectAssignable<IUser>({ lastSeen: new Date(), userID: "a", username: "b" });
 expectAssignable<IDevice>({
+    deleted: false,
     deviceID: "a",
+    lastLogin: "e",
+    name: "d",
     owner: "b",
     signKey: "c",
-    name: "d",
-    lastLogin: "e",
-    deleted: false,
 });
 expectAssignable<IBaseMsg>({ transmissionID: "x", type: "y" });
-expectAssignable<ISuccessMsg>({ transmissionID: "x", type: "y", data: null });
+expectAssignable<ISuccessMsg>({ data: null, transmissionID: "x", type: "y" });
