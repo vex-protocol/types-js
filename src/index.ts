@@ -3,47 +3,47 @@
 // ==========================================
 
 export const TokenScopes = {
-    Register: 0,
-    File: 1,
     Avatar: 2,
-    Device: 3,
-    Invite: 4,
-    Emoji: 5,
     Connect: 6,
+    Device: 3,
+    Emoji: 5,
+    File: 1,
+    Invite: 4,
+    Register: 0,
 } as const;
-export type TokenScopes = (typeof TokenScopes)[keyof typeof TokenScopes];
-
 export interface IActionToken {
     key: string;
-    time: Date;
     scope: TokenScopes;
-}
-
-export interface IFilePayload {
-    owner: string;
-    signed: string;
-    nonce: string;
-    file?: string;
-}
-
-export interface IFileResponse {
-    details: IFileSQL;
-    data: Uint8Array;
+    time: Date;
 }
 
 export interface IDevicePayload {
-    username: string;
-    signKey: string;
-    preKey: string;
-    preKeySignature: string;
-    preKeyIndex: number;
-    signed: string;
     deviceName: string;
+    preKey: string;
+    preKeyIndex: number;
+    preKeySignature: string;
+    signed: string;
+    signKey: string;
+    username: string;
+}
+
+export interface IFilePayload {
+    file?: string;
+    nonce: string;
+    owner: string;
+    signed: string;
+}
+
+export interface IFileResponse {
+    data: Uint8Array;
+    details: IFileSQL;
 }
 
 export interface IRegistrationPayload extends IDevicePayload {
     password: string;
 }
+
+export type TokenScopes = (typeof TokenScopes)[keyof typeof TokenScopes];
 
 // ==========================================
 // WEBSOCKET TYPES (Network Layer)
@@ -61,31 +61,141 @@ export const MailType = {
     initial: 0,
     subsequent: 1,
 } as const;
-export type MailType = (typeof MailType)[keyof typeof MailType];
-
 export interface IBaseMsg {
     transmissionID: string;
     type: string;
 }
 
-export interface ISucessMsg extends IBaseMsg {
-    data: unknown;
-    timestamp?: string;
+export interface IChallMsg extends IBaseMsg {
+    challenge: Uint8Array;
+    type: "challenge";
+}
+
+export interface IChannel {
+    channelID: string;
+    name: string;
+    serverID: string;
+}
+
+export interface IDevice {
+    deleted: boolean;
+    deviceID: string;
+    lastLogin: string;
+    name: string;
+    owner: string;
+    signKey: string;
+}
+
+export interface IEmoji {
+    emojiID: string;
+    name: string;
+    owner: string;
 }
 
 export interface IErrMsg extends IBaseMsg {
-    error: string;
     data?: unknown;
+    error: string;
 }
 
-export interface IChallMsg extends IBaseMsg {
-    type: "challenge";
-    challenge: Uint8Array;
+export interface IFileSQL {
+    fileID: string;
+    nonce: string;
+    owner: string;
 }
 
-export interface IRespMsg extends IBaseMsg {
-    type: "response";
-    signed: Uint8Array;
+export interface IIdentityKeys {
+    deviceID: string;
+    keyID: string;
+    privateKey?: string;
+    publicKey: string;
+    userID: string;
+}
+
+export interface IInvite {
+    expiration: string;
+    inviteID: string;
+    owner: string;
+    serverID: string;
+}
+
+// Resources attached to success messages
+
+export interface IKeyBundle {
+    otk?: IPreKeysWS;
+    preKey: IPreKeysWS;
+    signKey: Uint8Array;
+}
+
+export interface IMailSQL {
+    authorID: string;
+    cipher: string;
+    extra: string;
+    forward: boolean;
+    group: null | string;
+    header: string;
+    mailID: string;
+    mailType: MailType;
+    nonce: string;
+    readerID: string;
+    recipient: string;
+    sender: string;
+    time: Date;
+}
+
+export interface IMailWS {
+    authorID: string;
+    cipher: Uint8Array;
+    extra: Uint8Array;
+    forward: boolean;
+    group: null | Uint8Array;
+    mailID: string;
+    mailType: MailType;
+    nonce: Uint8Array;
+    readerID: string;
+    recipient: string;
+    sender: string;
+}
+
+// ==========================================
+// IDENTITY PERSISTENCE (App-level)
+// ==========================================
+
+export interface INotifyMsg extends IBaseMsg {
+    data?: unknown;
+    event: string;
+}
+
+export interface IPermission {
+    permissionID: string;
+    powerLevel: number;
+    resourceID: string;
+    resourceType: string;
+    userID: string;
+}
+
+// ==========================================
+// PUBLIC API TYPES (returned to clients)
+// ==========================================
+
+export interface IPreKeysSQL {
+    deviceID: string;
+    index: number;
+    keyID: string;
+    privateKey?: string;
+    publicKey: string;
+    signature: string;
+    userID: string;
+}
+
+// ==========================================
+// DATABASE TYPES (SQL / Knex — server only)
+// ==========================================
+
+export interface IPreKeysWS {
+    deviceID: string;
+    index: number;
+    publicKey: Uint8Array;
+    signature: Uint8Array;
 }
 
 export interface IReceiptMsg extends IBaseMsg {
@@ -93,172 +203,62 @@ export interface IReceiptMsg extends IBaseMsg {
 }
 
 export interface IResourceMsg extends IBaseMsg {
-    resourceType: string;
     action: string;
     data?: unknown;
+    resourceType: string;
 }
 
-export interface INotifyMsg extends IBaseMsg {
-    event: string;
-    data?: unknown;
+export interface IRespMsg extends IBaseMsg {
+    signed: Uint8Array;
+    type: "response";
 }
 
-// Resources attached to success messages
-
-export interface IKeyBundle {
-    signKey: Uint8Array;
-    preKey: IPreKeysWS;
-    otk?: IPreKeysWS;
+export interface IServer {
+    icon?: string;
+    name: string;
+    serverID: string;
 }
 
-export interface IPreKeysWS {
+export interface ISessionSQL {
     deviceID: string;
-    publicKey: Uint8Array;
-    signature: Uint8Array;
-    index: number;
+    fingerprint: string;
+    lastUsed: Date;
+    mode: "initiator" | "receiver";
+    publicKey: string;
+    sessionID: string;
+    SK: string;
+    userID: string;
+    verified: boolean;
 }
 
-export interface IMailWS {
-    mailID: string;
-    mailType: MailType;
-    sender: string;
-    recipient: string;
-    cipher: Uint8Array;
-    nonce: Uint8Array;
-    extra: Uint8Array;
-    group: Uint8Array | null;
-    forward: boolean;
-    authorID: string;
-    readerID: string;
+export interface ISucessMsg extends IBaseMsg {
+    data: unknown;
+    timestamp?: string;
 }
-
-// ==========================================
-// IDENTITY PERSISTENCE (App-level)
-// ==========================================
-
-export interface StoredCredentials {
-    username: string;
-    deviceID: string;
-    deviceKey: string; // hex Ed25519 secret key
-    preKey?: string;
-    token?: string;
-}
-
-export interface KeyStore {
-    load(username?: string): Promise<StoredCredentials | null>;
-    save(creds: StoredCredentials): Promise<void>;
-    clear(username: string): Promise<void>;
-}
-
-// ==========================================
-// PUBLIC API TYPES (returned to clients)
-// ==========================================
 
 export interface IUser {
+    lastSeen: Date;
     userID: string;
     username: string;
-    lastSeen: Date;
 }
-
-// ==========================================
-// DATABASE TYPES (SQL / Knex — server only)
-// ==========================================
 
 export interface IUserRecord extends IUser {
     passwordHash: string;
     passwordSalt: string;
 }
 
-export interface IDevice {
+export interface KeyStore {
+    clear(username: string): Promise<void>;
+    load(username?: string): Promise<null | StoredCredentials>;
+    save(creds: StoredCredentials): Promise<void>;
+}
+
+export type MailType = (typeof MailType)[keyof typeof MailType];
+
+export interface StoredCredentials {
     deviceID: string;
-    owner: string;
-    signKey: string;
-    name: string;
-    lastLogin: string;
-    deleted: boolean;
-}
-
-export interface IInvite {
-    inviteID: string;
-    serverID: string;
-    owner: string;
-    expiration: string;
-}
-
-export interface IMailSQL {
-    mailID: string;
-    mailType: MailType;
-    header: string;
-    recipient: string;
-    sender: string;
-    cipher: string;
-    nonce: string;
-    extra: string;
-    time: Date;
-    group: string | null;
-    forward: boolean;
-    authorID: string;
-    readerID: string;
-}
-
-export interface IEmoji {
-    emojiID: string;
-    owner: string;
-    name: string;
-}
-
-export interface IFileSQL {
-    fileID: string;
-    owner: string;
-    nonce: string;
-}
-
-export interface IServer {
-    serverID: string;
-    name: string;
-    icon?: string;
-}
-
-export interface IChannel {
-    channelID: string;
-    serverID: string;
-    name: string;
-}
-
-export interface IPermission {
-    permissionID: string;
-    userID: string;
-    resourceID: string;
-    resourceType: string;
-    powerLevel: number;
-}
-
-export interface IIdentityKeys {
-    keyID: string;
-    userID: string;
-    deviceID: string;
-    privateKey?: string;
-    publicKey: string;
-}
-
-export interface IPreKeysSQL {
-    keyID: string;
-    userID: string;
-    deviceID: string;
-    index: number;
-    privateKey?: string;
-    publicKey: string;
-    signature: string;
-}
-
-export interface ISessionSQL {
-    sessionID: string;
-    userID: string;
-    deviceID: string;
-    mode: "initiator" | "receiver";
-    SK: string;
-    publicKey: string;
-    fingerprint: string;
-    lastUsed: Date;
-    verified: boolean;
+    deviceKey: string; // hex Ed25519 secret key
+    preKey?: string;
+    token?: string;
+    username: string;
 }

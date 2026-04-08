@@ -1,8 +1,10 @@
+import perfectionist from "eslint-plugin-perfectionist";
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
 
 export default tseslint.config(
     ...tseslint.configs.strictTypeChecked,
+    perfectionist.configs["recommended-natural"],
     {
         languageOptions: {
             parserOptions: {
