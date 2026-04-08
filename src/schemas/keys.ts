@@ -9,12 +9,8 @@ export const keyBundle = z
             .object({
                 deviceID: z.string().describe("Device identifier"),
                 index: z.number().describe("OTK index"),
-                publicKey: z
-                    .instanceof(Uint8Array)
-                    .describe("X25519 OTK (bytes)"),
-                signature: z
-                    .instanceof(Uint8Array)
-                    .describe("OTK signature (bytes)"),
+                publicKey: uint8.describe("X25519 OTK (bytes)"),
+                signature: uint8.describe("OTK signature (bytes)"),
             })
             .optional()
             .describe("One-time key (consumed after use)"),
@@ -22,17 +18,11 @@ export const keyBundle = z
             .object({
                 deviceID: z.string().describe("Device identifier"),
                 index: z.number().describe("Pre-key index"),
-                publicKey: z
-                    .instanceof(Uint8Array)
-                    .describe("X25519 pre-key (bytes)"),
-                signature: z
-                    .instanceof(Uint8Array)
-                    .describe("Pre-key signature (bytes)"),
+                publicKey: uint8.describe("X25519 pre-key (bytes)"),
+                signature: uint8.describe("Pre-key signature (bytes)"),
             })
             .describe("Signed pre-key"),
-        signKey: z
-            .instanceof(Uint8Array)
-            .describe("Ed25519 signing public key"),
+        signKey: uint8.describe("Ed25519 signing public key"),
     })
     .describe("X3DH key bundle for session establishment");
 export type IKeyBundle = z.infer<typeof keyBundle>;
@@ -42,12 +32,8 @@ export const preKeysWS = z
     .object({
         deviceID: z.string().describe("Device identifier"),
         index: z.number().describe("Pre-key index"),
-        publicKey: z
-            .instanceof(Uint8Array)
-            .describe("Pre-key public key (bytes)"),
-        signature: z
-            .instanceof(Uint8Array)
-            .describe("Pre-key signature (bytes)"),
+        publicKey: uint8.describe("Pre-key public key (bytes)"),
+        signature: uint8.describe("Pre-key signature (bytes)"),
     })
     .describe("WebSocket pre-key payload");
 export type IPreKeysWS = z.infer<typeof preKeysWS>;

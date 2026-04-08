@@ -66,9 +66,7 @@ export type IRespMsg = z.infer<typeof respMsg>;
 /** Mail receipt acknowledgment. */
 export const receiptMsg = baseMsg
     .extend({
-        nonce: z
-            .instanceof(Uint8Array)
-            .describe("Mail nonce being acknowledged"),
+        nonce: uint8.describe("Mail nonce being acknowledged"),
     })
     .describe("Mail receipt");
 export type IReceiptMsg = z.infer<typeof receiptMsg>;
