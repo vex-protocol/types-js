@@ -55,14 +55,13 @@ const bearerAuth = registry.registerComponent("securitySchemes", "bearerAuth", {
     bearerFormat: "JWT",
 });
 
-const idParam = (name: string, description: string) =>
-    ({
-        in: "path" as const,
-        name,
-        required: true,
-        schema: { type: "string" as const },
-        description,
-    });
+const idParam = (name: string, description: string) => ({
+    in: "path" as const,
+    name,
+    required: true,
+    schema: { type: "string" as const },
+    description,
+});
 
 // ── Auth endpoints ──────────────────────────────────────────────────────────
 

@@ -149,8 +149,7 @@ for (const msg of messages) {
         $ref: `#/components/messages/${key}`,
     };
 
-    const opName =
-        msg.direction === "send" ? msg.name : `receive${key}`;
+    const opName = msg.direction === "send" ? msg.name : `receive${key}`;
     operations[opName] = {
         action: msg.direction,
         channel: { $ref: "#/channels/chat" },

@@ -24,13 +24,12 @@
     "author": "Extra <extrahash@protonmail.com>",
     "license": "AGPL-3.0-or-later",
     "engines": {
-        "node": ">=24.0.0",
+        "node": ">=18.0.0",
         "npm": ">=10.0.0"
     },
     "packageManager": "npm@10.9.2",
     "scripts": {
         "preinstall": "npx only-allow npm",
-        "start": "node ./dist/index.js",
         "build": "tsc",
         "build:clean": "rimraf dist && tsc",
         "prepack": "npm run build",
@@ -76,7 +75,7 @@
         "directory": "src"
     },
     "lint-staged": {
-        "*.ts": [
+        "src/**/*.ts": [
             "eslint --fix",
             "prettier --write"
         ]

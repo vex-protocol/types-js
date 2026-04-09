@@ -1,34 +1,94 @@
+import type { MailType } from "./messages.js";
+
 import { z } from "zod/v4";
 
 import { datetime, uint8 } from "./common.js";
 
+// ── Interfaces ──────────────────────────────────────────────────────────────
+
 /** X3DH key bundle for session establishment. */
-export const keyBundle = z
+export interface KeyBundle {
+    otk?: KeyBundleEntry | undefined;
+    preKey: KeyBundleEntry;
+    signKey: Uint8Array;
+}
+
+/** Key bundle entry (shared shape for OTK and pre-key). */
+export interface KeyBundleEntry {
+    deviceID: string;
+    index: null | number;
+    publicKey: Uint8Array;
+    signature: Uint8Array;
+}
+
+/** Mail message (SQL/database format). */
+export interface MailSQL {
+    authorID: string;
+    cipher: string;
+    extra: string;
+    forward: boolean;
+    group: null | string;
+    header: string;
+    mailID: string;
+    mailType: MailType;
+    nonce: string;
+    readerID: string;
+    recipient: string;
+    sender: string;
+    time: string;
+}
+
+/** Encrypted mail message (WebSocket format). */
+export interface MailWS {
+    authorID: string;
+    cipher: Uint8Array;
+    extra: Uint8Array;
+    forward: boolean;
+    group: null | Uint8Array;
+    mailID: string;
+    mailType: MailType;
+    nonce: Uint8Array;
+    readerID: string;
+    recipient: string;
+    sender: string;
+}
+
+/** Pre-key database record (shared — used by both spire and libvex). */
+export interface PreKeysSQL {
+    deviceID: string;
+    index: null | number;
+    keyID: string;
+    privateKey?: string | undefined;
+    publicKey: string;
+    signature: string;
+    userID: string;
+}
+
+/** WebSocket pre-key payload. */
+export type PreKeysWS = KeyBundleEntry;
+
+// ── Schemas ─────────────────────────────────────────────────────────────────
+
+const keyBundleEntry = z.object({
+    deviceID: z.string().describe("Device identifier"),
+    index: z.number().nullable().describe("Key index"),
+    publicKey: uint8.describe("Public key (bytes)"),
+    signature: uint8.describe("Signature (bytes)"),
+});
+
+/** X3DH key bundle for session establishment. */
+export const KeyBundleSchema: z.ZodType<KeyBundle> = z
     .object({
-        otk: z
-            .object({
-                deviceID: z.string().describe("Device identifier"),
-                index: z.number().nullable().describe("OTK index"),
-                publicKey: uint8.describe("X25519 OTK (bytes)"),
-                signature: uint8.describe("OTK signature (bytes)"),
-            })
+        otk: keyBundleEntry
             .optional()
             .describe("One-time key (consumed after use)"),
-        preKey: z
-            .object({
-                deviceID: z.string().describe("Device identifier"),
-                index: z.number().nullable().describe("Pre-key index"),
-                publicKey: uint8.describe("X25519 pre-key (bytes)"),
-                signature: uint8.describe("Pre-key signature (bytes)"),
-            })
-            .describe("Signed pre-key"),
+        preKey: keyBundleEntry.describe("Signed pre-key"),
         signKey: uint8.describe("Ed25519 signing public key"),
     })
     .describe("X3DH key bundle for session establishment");
-export type KeyBundle = z.infer<typeof keyBundle>;
 
 /** WebSocket pre-key payload. */
-export const preKeysWS = z
+export const PreKeysWSSchema: z.ZodType<PreKeysWS> = z
     .object({
         deviceID: z.string().describe("Device identifier"),
         index: z.number().nullable().describe("Pre-key index"),
@@ -36,10 +96,9 @@ export const preKeysWS = z
         signature: uint8.describe("Pre-key signature (bytes)"),
     })
     .describe("WebSocket pre-key payload");
-export type PreKeysWS = z.infer<typeof preKeysWS>;
 
 /** Pre-key database record (shared — used by both spire and libvex). */
-export const preKeysSQL = z
+export const PreKeysSQLSchema: z.ZodType<PreKeysSQL> = z
     .object({
         deviceID: z.string().describe("Device identifier"),
         index: z.number().nullable().describe("Key index"),
@@ -50,10 +109,9 @@ export const preKeysSQL = z
         userID: z.string().describe("Owner user ID"),
     })
     .describe("Pre-key database record");
-export type PreKeysSQL = z.infer<typeof preKeysSQL>;
 
 /** Encrypted mail message (WebSocket format). */
-export const mailWS = z
+export const MailWSSchema: z.ZodType<MailWS> = z
     .object({
         authorID: z.string().describe("Original author user ID"),
         cipher: uint8.describe("Encrypted message content"),
@@ -61,17 +119,18 @@ export const mailWS = z
         forward: z.boolean().describe("Whether this is a multi-device forward"),
         group: uint8.nullable().describe("Channel ID for group messages"),
         mailID: z.string().describe("Unique mail identifier"),
-        mailType: z.number().describe("Mail type (0=initial, 1=subsequent)"),
+        mailType: z
+            .union([z.literal(0), z.literal(1)])
+            .describe("Mail type (0=initial, 1=subsequent)"),
         nonce: uint8.describe("Encryption nonce"),
         readerID: z.string().describe("Intended reader user ID"),
         recipient: z.string().describe("Recipient device ID"),
         sender: z.string().describe("Sender device ID"),
     })
     .describe("Encrypted mail message");
-export type MailWS = z.infer<typeof mailWS>;
 
 /** Mail message (SQL/database format). */
-export const mailSQL = z
+export const MailSQLSchema: z.ZodType<MailSQL> = z
     .object({
         authorID: z.string().describe("Original author user ID"),
         cipher: z.string().describe("Encrypted content (hex)"),
@@ -80,7 +139,7 @@ export const mailSQL = z
         group: z.string().nullable().describe("Channel ID for group messages"),
         header: z.string().describe("Message header (hex)"),
         mailID: z.string().describe("Mail identifier"),
-        mailType: z.number().describe("Mail type"),
+        mailType: z.union([z.literal(0), z.literal(1)]).describe("Mail type"),
         nonce: z.string().describe("Encryption nonce (hex)"),
         readerID: z.string().describe("Intended reader user ID"),
         recipient: z.string().describe("Recipient device ID"),
@@ -88,4 +147,3 @@ export const mailSQL = z
         time: datetime.describe("Server timestamp"),
     })
     .describe("Mail database record");
-export type MailSQL = z.infer<typeof mailSQL>;

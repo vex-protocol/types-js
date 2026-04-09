@@ -6,7 +6,7 @@ import { z } from "zod/v4";
  * mismatch between TS 6.x's strict generic inference and tweetnacl/nacl.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const uint8 = z.custom<Uint8Array<any>>(
+export const uint8: z.ZodType<Uint8Array<any>> = z.custom<Uint8Array<any>>(
     (val) => val instanceof Uint8Array,
 );
 
@@ -14,10 +14,20 @@ export const uint8 = z.custom<Uint8Array<any>>(
  * ISO 8601 datetime string. Used for all timestamp fields on the wire.
  * No Date objects — strings everywhere, apps convert for display.
  */
-export const datetime = z.string().describe("ISO 8601 datetime");
+export const datetime: z.ZodType<string> = z
+    .string()
+    .describe("ISO 8601 datetime");
 
 /** Scoped token types for action tokens. */
-export const TokenScopes = {
+export const TokenScopes: {
+    readonly Avatar: 2;
+    readonly Connect: 6;
+    readonly Device: 3;
+    readonly Emoji: 5;
+    readonly File: 1;
+    readonly Invite: 4;
+    readonly Register: 0;
+} = {
     Avatar: 2,
     Connect: 6,
     Device: 3,
@@ -26,14 +36,34 @@ export const TokenScopes = {
     Invite: 4,
     Register: 0,
 } as const;
+/** Action token for scoped operations with TTL. */
+export interface ActionToken {
+    key: string;
+    scope: TokenScopes;
+    time: string;
+}
+
+// ── Interfaces ──────────────────────────────────────────────────────────────
+
 export type TokenScopes = (typeof TokenScopes)[keyof typeof TokenScopes];
 
+// ── Schemas ─────────────────────────────────────────────────────────────────
+
 /** Action token for scoped operations with TTL. */
-export const actionToken = z
+export const ActionTokenSchema: z.ZodType<ActionToken> = z
     .object({
         key: z.string().describe("Token value"),
-        scope: z.number().describe("Token scope"),
+        scope: z
+            .union([
+                z.literal(0),
+                z.literal(1),
+                z.literal(2),
+                z.literal(3),
+                z.literal(4),
+                z.literal(5),
+                z.literal(6),
+            ])
+            .describe("Token scope"),
         time: datetime.describe("Token creation time"),
     })
     .describe("Scoped action token with TTL");
-export type ActionToken = z.infer<typeof actionToken>;

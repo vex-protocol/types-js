@@ -2,39 +2,42 @@ import { z } from "zod/v4";
 
 import { datetime } from "./common.js";
 
-/**
- * Stored login credentials for auto-login.
- *
- * @remarks Will move to libvex-js in a future release (SDK-internal type).
- */
-export const storedCredentials = z
-    .object({
-        deviceID: z.string().describe("Device identifier"),
-        deviceKey: z.string().describe("Ed25519 private key (hex)"),
-        preKey: z.string().optional().describe("Pre-key data"),
-        token: z.string().optional().describe("Cached auth token"),
-        username: z.string().describe("Account username"),
-    })
-    .describe("Stored device credentials for auto-login");
-/**
- * Platform-agnostic credential storage interface.
- *
- * @remarks Will move to libvex-js in a future release (SDK-internal contract).
- */
-export interface KeyStore {
-    clear(username: string): Promise<void>;
-    load(username?: string): Promise<null | StoredCredentials>;
-    save(creds: StoredCredentials): Promise<void>;
-}
+// ── Interfaces ──────────────────────────────────────────────────────────────
 
-export type StoredCredentials = z.infer<typeof storedCredentials>;
+/**
+ * Identity key database record.
+ *
+ * @remarks Will move to libvex-js in a future release (SDK-only persistence).
+ */
+export interface IdentityKeys {
+    deviceID: string;
+    keyID: string;
+    privateKey?: string | undefined;
+    publicKey: string;
+    userID: string;
+}
 
 /**
  * Session database record.
  *
  * @remarks Will move to libvex-js in a future release (SDK-only persistence).
  */
-export const sessionSQL = z
+export interface SessionSQL {
+    deviceID: string;
+    fingerprint: string;
+    lastUsed: string;
+    mode: "initiator" | "receiver";
+    publicKey: string;
+    sessionID: string;
+    SK: string;
+    userID: string;
+    verified: boolean;
+}
+
+// ── Schemas ─────────────────────────────────────────────────────────────────
+
+/** Session database record. */
+export const SessionSQLSchema: z.ZodType<SessionSQL> = z
     .object({
         deviceID: z.string().describe("Device identifier"),
         fingerprint: z.string().describe("Session fingerprint"),
@@ -47,14 +50,9 @@ export const sessionSQL = z
         verified: z.boolean().describe("Verification status"),
     })
     .describe("Session database record");
-export type SessionSQL = z.infer<typeof sessionSQL>;
 
-/**
- * Identity key database record.
- *
- * @remarks Will move to libvex-js in a future release (SDK-only persistence).
- */
-export const identityKeys = z
+/** Identity key database record. */
+export const IdentityKeysSchema: z.ZodType<IdentityKeys> = z
     .object({
         deviceID: z.string().describe("Device identifier"),
         keyID: z.string().describe("Key record identifier"),
@@ -63,4 +61,3 @@ export const identityKeys = z
         userID: z.string().describe("User identifier"),
     })
     .describe("Identity key database record");
-export type IdentityKeys = z.infer<typeof identityKeys>;

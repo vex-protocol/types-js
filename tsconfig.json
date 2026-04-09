@@ -25,8 +25,10 @@
         "noUnusedParameters": true,
 
         "isolatedModules": true,
+        "isolatedDeclarations": true,
         "verbatimModuleSyntax": true,
         "erasableSyntaxOnly": true,
+        "noUncheckedSideEffectImports": true,
         "forceConsistentCasingInFileNames": true,
 
         "resolveJsonModule": true,

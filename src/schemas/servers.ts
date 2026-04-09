@@ -1,27 +1,60 @@
 import { z } from "zod/v4";
 
+// ── Interfaces ──────────────────────────────────────────────────────────────
+
+/** Server channel. */
+export interface Channel {
+    channelID: string;
+    name: string;
+    serverID: string;
+}
+
+/** Server invitation. */
+export interface Invite {
+    expiration: string;
+    inviteID: string;
+    owner: string;
+    serverID: string;
+}
+
+/** Permission grant. */
+export interface Permission {
+    permissionID: string;
+    powerLevel: number;
+    resourceID: string;
+    resourceType: string;
+    userID: string;
+}
+
 /** Chat server. */
-export const server = z
+export interface Server {
+    icon?: string | undefined;
+    name: string;
+    serverID: string;
+}
+
+// ── Schemas ─────────────────────────────────────────────────────────────────
+
+/** Chat server. */
+export const ServerSchema: z.ZodType<Server> = z
     .object({
         icon: z.string().optional().describe("Server icon file ID"),
         name: z.string().describe("Server display name"),
         serverID: z.string().describe("Unique server identifier"),
     })
     .describe("Chat server");
-export type Server = z.infer<typeof server>;
 
 /** Server channel. */
-export const channel = z
+export const ChannelSchema: z.ZodType<Channel> = z
     .object({
         channelID: z.string().describe("Unique channel identifier"),
         name: z.string().describe("Channel display name"),
         serverID: z.string().describe("Parent server ID"),
     })
     .describe("Server channel");
-export type Channel = z.infer<typeof channel>;
 
 /** Permission grant. */
-export const permission = z
+export const PermissionSchema: z.ZodType<Permission> = z
     .object({
         permissionID: z.string().describe("Unique permission identifier"),
         powerLevel: z.number().describe("Permission level (0-100)"),
@@ -30,10 +63,9 @@ export const permission = z
         userID: z.string().describe("Grantee user ID"),
     })
     .describe("Permission grant");
-export type Permission = z.infer<typeof permission>;
 
 /** Server invitation. */
-export const invite = z
+export const InviteSchema: z.ZodType<Invite> = z
     .object({
         expiration: z.string().describe("Expiration datetime"),
         inviteID: z.string().describe("Unique invite identifier"),
@@ -41,4 +73,3 @@ export const invite = z
         serverID: z.string().describe("Target server ID"),
     })
     .describe("Server invitation");
-export type Invite = z.infer<typeof invite>;
