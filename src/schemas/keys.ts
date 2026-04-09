@@ -8,7 +8,7 @@ export const keyBundle = z
         otk: z
             .object({
                 deviceID: z.string().describe("Device identifier"),
-                index: z.number().describe("OTK index"),
+                index: z.number().nullable().describe("OTK index"),
                 publicKey: uint8.describe("X25519 OTK (bytes)"),
                 signature: uint8.describe("OTK signature (bytes)"),
             })
@@ -17,7 +17,7 @@ export const keyBundle = z
         preKey: z
             .object({
                 deviceID: z.string().describe("Device identifier"),
-                index: z.number().describe("Pre-key index"),
+                index: z.number().nullable().describe("Pre-key index"),
                 publicKey: uint8.describe("X25519 pre-key (bytes)"),
                 signature: uint8.describe("Pre-key signature (bytes)"),
             })
@@ -31,7 +31,7 @@ export type KeyBundle = z.infer<typeof keyBundle>;
 export const preKeysWS = z
     .object({
         deviceID: z.string().describe("Device identifier"),
-        index: z.number().describe("Pre-key index"),
+        index: z.number().nullable().describe("Pre-key index"),
         publicKey: uint8.describe("Pre-key public key (bytes)"),
         signature: uint8.describe("Pre-key signature (bytes)"),
     })
@@ -42,7 +42,7 @@ export type PreKeysWS = z.infer<typeof preKeysWS>;
 export const preKeysSQL = z
     .object({
         deviceID: z.string().describe("Device identifier"),
-        index: z.number().describe("Key index"),
+        index: z.number().nullable().describe("Key index"),
         keyID: z.string().describe("Key record identifier"),
         privateKey: z.string().optional().describe("Private key (hex)"),
         publicKey: z.string().describe("Public key (hex)"),

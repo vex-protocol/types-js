@@ -8,11 +8,11 @@ import { expectAssignable, expectType } from "tsd";
 import {
     type BaseMsg,
     type Device,
-    type SuccessMsg,
-    type User,
     MailType,
     SocketAuthErrors,
+    type SuccessMsg,
     TokenScopes,
+    type User,
 } from "./index.js";
 
 // ── Const values have correct literal types ─────────────────────────────────
@@ -29,7 +29,11 @@ expectType<1>(SocketAuthErrors.InvalidToken);
 
 // ── Types have correct field types ──────────────────────────────────────────
 
-expectAssignable<User>({ lastSeen: new Date().toISOString(), userID: "a", username: "b" });
+expectAssignable<User>({
+    lastSeen: new Date().toISOString(),
+    userID: "a",
+    username: "b",
+});
 expectAssignable<Device>({
     deleted: false,
     deviceID: "a",
@@ -39,4 +43,8 @@ expectAssignable<Device>({
     signKey: "c",
 });
 expectAssignable<BaseMsg>({ transmissionID: "x", type: "y" });
-expectAssignable<SuccessMsg>({ data: null, transmissionID: "x", type: "y" });
+expectAssignable<SuccessMsg>({
+    data: null,
+    transmissionID: "x",
+    type: "success",
+});
