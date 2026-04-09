@@ -6,10 +6,10 @@
 import { expectAssignable, expectType } from "tsd";
 
 import {
-    type IBaseMsg,
-    type IDevice,
-    type ISuccessMsg,
-    type IUser,
+    type BaseMsg,
+    type Device,
+    type SuccessMsg,
+    type User,
     MailType,
     SocketAuthErrors,
     TokenScopes,
@@ -29,8 +29,8 @@ expectType<1>(SocketAuthErrors.InvalidToken);
 
 // ── Types have correct field types ──────────────────────────────────────────
 
-expectAssignable<IUser>({ lastSeen: new Date(), userID: "a", username: "b" });
-expectAssignable<IDevice>({
+expectAssignable<User>({ lastSeen: new Date().toISOString(), userID: "a", username: "b" });
+expectAssignable<Device>({
     deleted: false,
     deviceID: "a",
     lastLogin: "e",
@@ -38,5 +38,5 @@ expectAssignable<IDevice>({
     owner: "b",
     signKey: "c",
 });
-expectAssignable<IBaseMsg>({ transmissionID: "x", type: "y" });
-expectAssignable<ISuccessMsg>({ data: null, transmissionID: "x", type: "y" });
+expectAssignable<BaseMsg>({ transmissionID: "x", type: "y" });
+expectAssignable<SuccessMsg>({ data: null, transmissionID: "x", type: "y" });

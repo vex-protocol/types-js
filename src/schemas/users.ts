@@ -1,14 +1,16 @@
 import { z } from "zod/v4";
 
+import { datetime } from "./common.js";
+
 /** Public user profile. */
 export const user = z
     .object({
-        lastSeen: z.date().describe("Last activity timestamp"),
+        lastSeen: datetime.describe("Last activity timestamp"),
         userID: z.string().describe("Unique user identifier"),
         username: z.string().describe("Display username"),
     })
     .describe("Public user profile");
-export type IUser = z.infer<typeof user>;
+export type User = z.infer<typeof user>;
 
 /** Database user record with auth fields. */
 export const userRecord = user
@@ -17,7 +19,7 @@ export const userRecord = user
         passwordSalt: z.string().describe("Password salt"),
     })
     .describe("Database user record with password hash");
-export type IUserRecord = z.infer<typeof userRecord>;
+export type UserRecord = z.infer<typeof userRecord>;
 
 /** Device record for multi-device support. */
 export const device = z
@@ -30,7 +32,7 @@ export const device = z
         signKey: z.string().describe("Ed25519 signing public key (hex)"),
     })
     .describe("Device registration record");
-export type IDevice = z.infer<typeof device>;
+export type Device = z.infer<typeof device>;
 
 /** Device registration payload (HTTP). */
 export const devicePayload = z
@@ -44,7 +46,7 @@ export const devicePayload = z
         username: z.string().describe("Account username"),
     })
     .describe("Device registration payload");
-export type IDevicePayload = z.infer<typeof devicePayload>;
+export type DevicePayload = z.infer<typeof devicePayload>;
 
 /** User registration payload (HTTP). */
 export const registrationPayload = devicePayload
@@ -52,4 +54,4 @@ export const registrationPayload = devicePayload
         password: z.string().describe("Account password"),
     })
     .describe("User registration payload");
-export type IRegistrationPayload = z.infer<typeof registrationPayload>;
+export type RegistrationPayload = z.infer<typeof registrationPayload>;

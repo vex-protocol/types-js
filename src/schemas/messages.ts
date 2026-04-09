@@ -25,7 +25,7 @@ export const baseMsg = z
         type: z.string().describe("Message type discriminator"),
     })
     .describe("Base WebSocket message");
-export type IBaseMsg = z.infer<typeof baseMsg>;
+export type BaseMsg = z.infer<typeof baseMsg>;
 
 /** Success response. */
 export const successMsg = baseMsg
@@ -34,7 +34,7 @@ export const successMsg = baseMsg
         timestamp: z.string().optional().describe("Server timestamp"),
     })
     .describe("Success response message");
-export type ISuccessMsg = z.infer<typeof successMsg>;
+export type SuccessMsg = z.infer<typeof successMsg>;
 
 /** Error response. */
 export const errMsg = baseMsg
@@ -43,7 +43,7 @@ export const errMsg = baseMsg
         error: z.string().describe("Error message"),
     })
     .describe("Error response message");
-export type IErrMsg = z.infer<typeof errMsg>;
+export type ErrMsg = z.infer<typeof errMsg>;
 
 /** Auth challenge. */
 export const challMsg = baseMsg
@@ -52,7 +52,7 @@ export const challMsg = baseMsg
         type: z.literal("challenge"),
     })
     .describe("Authentication challenge");
-export type IChallMsg = z.infer<typeof challMsg>;
+export type ChallMsg = z.infer<typeof challMsg>;
 
 /** Auth response. */
 export const respMsg = baseMsg
@@ -61,7 +61,7 @@ export const respMsg = baseMsg
         type: z.literal("response"),
     })
     .describe("Authentication response");
-export type IRespMsg = z.infer<typeof respMsg>;
+export type RespMsg = z.infer<typeof respMsg>;
 
 /** Mail receipt acknowledgment. */
 export const receiptMsg = baseMsg
@@ -69,7 +69,7 @@ export const receiptMsg = baseMsg
         nonce: uint8.describe("Mail nonce being acknowledged"),
     })
     .describe("Mail receipt");
-export type IReceiptMsg = z.infer<typeof receiptMsg>;
+export type ReceiptMsg = z.infer<typeof receiptMsg>;
 
 /** Resource CRUD message. */
 export const resourceMsg = baseMsg
@@ -79,7 +79,7 @@ export const resourceMsg = baseMsg
         resourceType: z.string().describe("Resource type"),
     })
     .describe("Resource operation message");
-export type IResourceMsg = z.infer<typeof resourceMsg>;
+export type ResourceMsg = z.infer<typeof resourceMsg>;
 
 /** Server notification. */
 export const notifyMsg = baseMsg
@@ -88,4 +88,4 @@ export const notifyMsg = baseMsg
         event: z.string().describe("Notification event type"),
     })
     .describe("Server notification");
-export type INotifyMsg = z.infer<typeof notifyMsg>;
+export type NotifyMsg = z.infer<typeof notifyMsg>;

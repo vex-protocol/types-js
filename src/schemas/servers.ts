@@ -8,7 +8,7 @@ export const server = z
         serverID: z.string().describe("Unique server identifier"),
     })
     .describe("Chat server");
-export type IServer = z.infer<typeof server>;
+export type Server = z.infer<typeof server>;
 
 /** Server channel. */
 export const channel = z
@@ -18,7 +18,7 @@ export const channel = z
         serverID: z.string().describe("Parent server ID"),
     })
     .describe("Server channel");
-export type IChannel = z.infer<typeof channel>;
+export type Channel = z.infer<typeof channel>;
 
 /** Permission grant. */
 export const permission = z
@@ -30,7 +30,7 @@ export const permission = z
         userID: z.string().describe("Grantee user ID"),
     })
     .describe("Permission grant");
-export type IPermission = z.infer<typeof permission>;
+export type Permission = z.infer<typeof permission>;
 
 /** Server invitation. */
 export const invite = z
@@ -41,4 +41,4 @@ export const invite = z
         serverID: z.string().describe("Target server ID"),
     })
     .describe("Server invitation");
-export type IInvite = z.infer<typeof invite>;
+export type Invite = z.infer<typeof invite>;

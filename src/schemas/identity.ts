@@ -1,5 +1,7 @@
 import { z } from "zod/v4";
 
+import { datetime } from "./common.js";
+
 /**
  * Stored login credentials for auto-login.
  *
@@ -36,7 +38,7 @@ export const sessionSQL = z
     .object({
         deviceID: z.string().describe("Device identifier"),
         fingerprint: z.string().describe("Session fingerprint"),
-        lastUsed: z.date().describe("Last activity timestamp"),
+        lastUsed: datetime.describe("Last activity timestamp"),
         mode: z.enum(["initiator", "receiver"]).describe("Session role"),
         publicKey: z.string().describe("Remote public key (hex)"),
         sessionID: z.string().describe("Session identifier"),
@@ -45,7 +47,7 @@ export const sessionSQL = z
         verified: z.boolean().describe("Verification status"),
     })
     .describe("Session database record");
-export type ISessionSQL = z.infer<typeof sessionSQL>;
+export type SessionSQL = z.infer<typeof sessionSQL>;
 
 /**
  * Identity key database record.
@@ -61,4 +63,4 @@ export const identityKeys = z
         userID: z.string().describe("User identifier"),
     })
     .describe("Identity key database record");
-export type IIdentityKeys = z.infer<typeof identityKeys>;
+export type IdentityKeys = z.infer<typeof identityKeys>;

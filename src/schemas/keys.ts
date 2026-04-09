@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-import { uint8 } from "./common.js";
+import { datetime, uint8 } from "./common.js";
 
 /** X3DH key bundle for session establishment. */
 export const keyBundle = z
@@ -25,7 +25,7 @@ export const keyBundle = z
         signKey: uint8.describe("Ed25519 signing public key"),
     })
     .describe("X3DH key bundle for session establishment");
-export type IKeyBundle = z.infer<typeof keyBundle>;
+export type KeyBundle = z.infer<typeof keyBundle>;
 
 /** WebSocket pre-key payload. */
 export const preKeysWS = z
@@ -36,7 +36,7 @@ export const preKeysWS = z
         signature: uint8.describe("Pre-key signature (bytes)"),
     })
     .describe("WebSocket pre-key payload");
-export type IPreKeysWS = z.infer<typeof preKeysWS>;
+export type PreKeysWS = z.infer<typeof preKeysWS>;
 
 /** Pre-key database record (shared — used by both spire and libvex). */
 export const preKeysSQL = z
@@ -50,7 +50,7 @@ export const preKeysSQL = z
         userID: z.string().describe("Owner user ID"),
     })
     .describe("Pre-key database record");
-export type IPreKeysSQL = z.infer<typeof preKeysSQL>;
+export type PreKeysSQL = z.infer<typeof preKeysSQL>;
 
 /** Encrypted mail message (WebSocket format). */
 export const mailWS = z
@@ -68,7 +68,7 @@ export const mailWS = z
         sender: z.string().describe("Sender device ID"),
     })
     .describe("Encrypted mail message");
-export type IMailWS = z.infer<typeof mailWS>;
+export type MailWS = z.infer<typeof mailWS>;
 
 /** Mail message (SQL/database format). */
 export const mailSQL = z
@@ -85,7 +85,7 @@ export const mailSQL = z
         readerID: z.string().describe("Intended reader user ID"),
         recipient: z.string().describe("Recipient device ID"),
         sender: z.string().describe("Sender device ID"),
-        time: z.date().describe("Server timestamp"),
+        time: datetime.describe("Server timestamp"),
     })
     .describe("Mail database record");
-export type IMailSQL = z.infer<typeof mailSQL>;
+export type MailSQL = z.infer<typeof mailSQL>;

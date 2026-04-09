@@ -10,6 +10,12 @@ export const uint8 = z.custom<Uint8Array<any>>(
     (val) => val instanceof Uint8Array,
 );
 
+/**
+ * ISO 8601 datetime string. Used for all timestamp fields on the wire.
+ * No Date objects — strings everywhere, apps convert for display.
+ */
+export const datetime = z.string().describe("ISO 8601 datetime");
+
 /** Scoped token types for action tokens. */
 export const TokenScopes = {
     Avatar: 2,
@@ -27,7 +33,7 @@ export const actionToken = z
     .object({
         key: z.string().describe("Token value"),
         scope: z.number().describe("Token scope"),
-        time: z.date().describe("Token creation time"),
+        time: datetime.describe("Token creation time"),
     })
     .describe("Scoped action token with TTL");
-export type IActionToken = z.infer<typeof actionToken>;
+export type ActionToken = z.infer<typeof actionToken>;

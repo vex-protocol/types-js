@@ -11,7 +11,7 @@ export const filePayload = z
         signed: z.string().describe("Signed file data"),
     })
     .describe("File upload payload");
-export type IFilePayload = z.infer<typeof filePayload>;
+export type FilePayload = z.infer<typeof filePayload>;
 
 /** File database record. */
 export const fileSQL = z
@@ -21,7 +21,7 @@ export const fileSQL = z
         owner: z.string().describe("File owner user ID"),
     })
     .describe("File database record");
-export type IFileSQL = z.infer<typeof fileSQL>;
+export type FileSQL = z.infer<typeof fileSQL>;
 
 /** File response with metadata and data. */
 export const fileResponse = z
@@ -30,7 +30,7 @@ export const fileResponse = z
         details: fileSQL.describe("File metadata"),
     })
     .describe("File response with metadata");
-export type IFileResponse = z.infer<typeof fileResponse>;
+export type FileResponse = z.infer<typeof fileResponse>;
 
 /** Custom server emoji. */
 export const emoji = z
@@ -40,4 +40,4 @@ export const emoji = z
         owner: z.string().describe("Server ID that owns this emoji"),
     })
     .describe("Custom server emoji");
-export type IEmoji = z.infer<typeof emoji>;
+export type Emoji = z.infer<typeof emoji>;
