@@ -72,6 +72,11 @@
         "typescript": "6.0.2",
         "typescript-eslint": "8.58.1"
     },
+    "typeCoverage": {
+        "atLeast": 100,
+        "strict": true,
+        "ignoreCatch": true
+    },
     "lint-staged": {
         "src/**/*.ts": [
             "eslint --fix",

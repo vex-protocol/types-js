@@ -84,7 +84,7 @@ jobs:
             - name: Type tests
               run: npm run test:types
             - name: Type coverage
-              run: npx type-coverage --at-least 99 --strict --ignore-catch
+              run: npx type-coverage
 
     package:
         name: Package
