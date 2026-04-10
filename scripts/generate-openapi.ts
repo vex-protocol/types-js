@@ -17,18 +17,17 @@ extendZodWithOpenApi(z);
 
 // Dynamic import so the schemas pick up the patched prototype
 const {
-    actionToken,
-    channel,
-    device,
-    devicePayload,
-    emoji,
-    fileSQL,
-    invite,
-    permission,
-    registrationPayload,
-    server,
-    user,
-    userRecord,
+    ActionTokenSchema: actionToken,
+    ChannelSchema: channel,
+    DeviceSchema: device,
+    DevicePayloadSchema: devicePayload,
+    EmojiSchema: emoji,
+    FileSQLSchema: fileSQL,
+    InviteSchema: invite,
+    PermissionSchema: permission,
+    RegistrationPayloadSchema: registrationPayload,
+    ServerSchema: server,
+    UserSchema: user,
 } = await import("../src/schemas/index.js");
 
 const registry = new OpenAPIRegistry();
@@ -68,7 +67,11 @@ const idParam = (name: string, description: string) => ({
 registry.registerPath({
     method: "post",
     path: "/auth",
+    operationId: "login",
     summary: "Login with username and password",
+    description:
+        "Authenticate with username and password credentials. Returns a JWT token and the authenticated user profile.",
+    tags: ["auth"],
     request: {
         body: {
             content: {
@@ -100,7 +103,11 @@ registry.registerPath({
 registry.registerPath({
     method: "post",
     path: "/auth/device",
+    operationId: "requestDeviceChallenge",
     summary: "Request device auth challenge",
+    description:
+        "Initiate device-key authentication by submitting a deviceID and signing key. Returns a challenge nonce to sign.",
+    tags: ["auth"],
     request: {
         body: {
             content: {
@@ -131,7 +138,11 @@ registry.registerPath({
 registry.registerPath({
     method: "post",
     path: "/auth/device/verify",
+    operationId: "verifyDeviceChallenge",
     summary: "Verify device auth challenge",
+    description:
+        "Submit the signed challenge to complete device-key authentication. Returns a JWT token and the authenticated user profile.",
+    tags: ["auth"],
     request: {
         body: {
             content: {
@@ -162,7 +173,11 @@ registry.registerPath({
 registry.registerPath({
     method: "post",
     path: "/register",
+    operationId: "register",
     summary: "Register a new user account",
+    description:
+        "Create a new user account with cryptographic device registration. Requires a signed registration payload with Ed25519 keys.",
+    tags: ["auth"],
     request: {
         body: {
             content: {
@@ -183,7 +198,11 @@ registry.registerPath({
 registry.registerPath({
     method: "post",
     path: "/whoami",
+    operationId: "whoami",
     summary: "Get current session info",
+    description:
+        "Return the current authenticated session including token expiry and user profile.",
+    tags: ["auth"],
     security: [{ [bearerAuth.name]: [] }],
     responses: {
         200: {
@@ -204,7 +223,10 @@ registry.registerPath({
 registry.registerPath({
     method: "post",
     path: "/goodbye",
+    operationId: "logout",
     summary: "Logout (invalidate token)",
+    description: "Invalidate the current JWT token, ending the session.",
+    tags: ["auth"],
     security: [{ [bearerAuth.name]: [] }],
     responses: { 200: { description: "Logged out" } },
 });
@@ -214,7 +236,11 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/token/{tokenType}",
+    operationId: "getActionToken",
     summary: "Request an action token",
+    description:
+        "Request a scoped, time-limited action token for operations like registration, file upload, or device pairing.",
+    tags: ["tokens"],
     request: {
         params: z.object({
             tokenType: z.enum([
@@ -241,7 +267,10 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/user/{id}",
+    operationId: "getUser",
     summary: "Get user profile",
+    description: "Retrieve the public profile for a user by their ID.",
+    tags: ["users"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -256,7 +285,11 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/user/{id}/devices",
+    operationId: "listUserDevices",
     summary: "List devices for a user",
+    description:
+        "List all registered devices for the given user, including signing keys and login timestamps.",
+    tags: ["users"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -272,7 +305,10 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/user/{id}/servers",
+    operationId: "listUserServers",
     summary: "List servers for a user",
+    description: "List all chat servers the given user is a member of.",
+    tags: ["users"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -288,7 +324,11 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/user/{id}/permissions",
+    operationId: "listUserPermissions",
     summary: "Get permissions for a user",
+    description:
+        "List all permission grants for the given user across all resources.",
+    tags: ["users"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -306,7 +346,10 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/server/{id}",
+    operationId: "getServer",
     summary: "Get a server",
+    description: "Retrieve details for a chat server by its ID.",
+    tags: ["servers"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -319,10 +362,14 @@ registry.registerPath({
 
 registry.registerPath({
     method: "post",
-    path: "/server/{name}",
+    path: "/server/{id}",
+    operationId: "createServer",
     summary: "Create a server",
+    description:
+        "Create a new chat server. The path parameter is used as the server name.",
+    tags: ["servers"],
     security: [{ [bearerAuth.name]: [] }],
-    request: { params: z.object({ name: z.string() }) },
+    request: { params: z.object({ id: z.string() }) },
     responses: {
         200: {
             description: "Server created",
@@ -334,7 +381,11 @@ registry.registerPath({
 registry.registerPath({
     method: "delete",
     path: "/server/{id}",
+    operationId: "deleteServer",
     summary: "Delete a server",
+    description:
+        "Permanently delete a chat server. Requires owner-level permissions.",
+    tags: ["servers"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -346,7 +397,10 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/server/{id}/channels",
+    operationId: "listServerChannels",
     summary: "List channels in a server",
+    description: "List all channels belonging to the given server.",
+    tags: ["servers"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -362,7 +416,10 @@ registry.registerPath({
 registry.registerPath({
     method: "post",
     path: "/server/{id}/channels",
+    operationId: "createChannel",
     summary: "Create a channel",
+    description: "Create a new channel within the given server.",
+    tags: ["servers"],
     security: [{ [bearerAuth.name]: [] }],
     request: {
         params: z.object({ id: z.string() }),
@@ -387,7 +444,10 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/channel/{id}",
+    operationId: "getChannel",
     summary: "Get a channel",
+    description: "Retrieve details for a channel by its ID.",
+    tags: ["channels"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -401,7 +461,11 @@ registry.registerPath({
 registry.registerPath({
     method: "delete",
     path: "/channel/{id}",
+    operationId: "deleteChannel",
     summary: "Delete a channel",
+    description:
+        "Permanently delete a channel. Requires sufficient permissions on the parent server.",
+    tags: ["channels"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ id: z.string() }) },
     responses: {
@@ -415,7 +479,11 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/invite/{inviteID}",
+    operationId: "getInvite",
     summary: "Get invite details",
+    description:
+        "Retrieve details for a server invite, including expiration and target server.",
+    tags: ["invites"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ inviteID: z.string() }) },
     responses: {
@@ -430,7 +498,11 @@ registry.registerPath({
 registry.registerPath({
     method: "patch",
     path: "/invite/{inviteID}",
+    operationId: "acceptInvite",
     summary: "Accept an invite",
+    description:
+        "Accept a server invite, granting the authenticated user membership and returning the new permission grant.",
+    tags: ["invites"],
     security: [{ [bearerAuth.name]: [] }],
     request: { params: z.object({ inviteID: z.string() }) },
     responses: {
@@ -446,7 +518,11 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/healthz",
+    operationId: "healthCheck",
     summary: "Health check",
+    description:
+        "Returns server and database readiness status. Used by load balancers and monitoring.",
+    tags: ["health"],
     responses: {
         200: {
             description: "Server health",
@@ -473,6 +549,10 @@ const doc = generator.generateDocument({
         description:
             "REST API for the Vex encrypted chat platform. Messages are serialized using msgpack.",
         license: { name: "AGPL-3.0-or-later" },
+        contact: {
+            name: "Vex Protocol",
+            url: "https://github.com/vex-protocol/types-js",
+        },
     },
     servers: [
         {
@@ -483,6 +563,18 @@ const doc = generator.generateDocument({
             url: "http://localhost:16777",
             description: "Local development",
         },
+    ],
+    tags: [
+        { name: "auth", description: "Authentication and session management" },
+        { name: "tokens", description: "Scoped action tokens" },
+        {
+            name: "users",
+            description: "User profiles and associated resources",
+        },
+        { name: "servers", description: "Chat servers and channels" },
+        { name: "channels", description: "Channel operations" },
+        { name: "invites", description: "Server invitations" },
+        { name: "health", description: "Health and readiness checks" },
     ],
 });
 

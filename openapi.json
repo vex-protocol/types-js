@@ -6,6 +6,10 @@
         "description": "REST API for the Vex encrypted chat platform. Messages are serialized using msgpack.",
         "license": {
             "name": "AGPL-3.0-or-later"
+        },
+        "contact": {
+            "name": "Vex Protocol",
+            "url": "https://github.com/vex-protocol/types-js"
         }
     },
     "servers": [
@@ -16,6 +20,36 @@
         {
             "url": "http://localhost:16777",
             "description": "Local development"
+        }
+    ],
+    "tags": [
+        {
+            "name": "auth",
+            "description": "Authentication and session management"
+        },
+        {
+            "name": "tokens",
+            "description": "Scoped action tokens"
+        },
+        {
+            "name": "users",
+            "description": "User profiles and associated resources"
+        },
+        {
+            "name": "servers",
+            "description": "Chat servers and channels"
+        },
+        {
+            "name": "channels",
+            "description": "Channel operations"
+        },
+        {
+            "name": "invites",
+            "description": "Server invitations"
+        },
+        {
+            "name": "health",
+            "description": "Health and readiness checks"
         }
     ],
     "components": {
@@ -32,7 +66,6 @@
                 "properties": {
                     "lastSeen": {
                         "type": "string",
-                        "format": "date-time",
                         "description": "Last activity timestamp"
                     },
                     "userID": {
@@ -225,12 +258,40 @@
                         "description": "Token value"
                     },
                     "scope": {
-                        "type": "number",
+                        "anyOf": [
+                            {
+                                "type": "number",
+                                "enum": [0]
+                            },
+                            {
+                                "type": "number",
+                                "enum": [1]
+                            },
+                            {
+                                "type": "number",
+                                "enum": [2]
+                            },
+                            {
+                                "type": "number",
+                                "enum": [3]
+                            },
+                            {
+                                "type": "number",
+                                "enum": [4]
+                            },
+                            {
+                                "type": "number",
+                                "enum": [5]
+                            },
+                            {
+                                "type": "number",
+                                "enum": [6]
+                            }
+                        ],
                         "description": "Token scope"
                     },
                     "time": {
                         "type": "string",
-                        "format": "date-time",
                         "description": "Token creation time"
                     }
                 },
@@ -334,7 +395,10 @@
     "paths": {
         "/auth": {
             "post": {
+                "operationId": "login",
                 "summary": "Login with username and password",
+                "description": "Authenticate with username and password credentials. Returns a JWT token and the authenticated user profile.",
+                "tags": ["auth"],
                 "requestBody": {
                     "content": {
                         "application/msgpack": {
@@ -369,7 +433,6 @@
                                             "properties": {
                                                 "lastSeen": {
                                                     "type": "string",
-                                                    "format": "date-time",
                                                     "description": "Last activity timestamp"
                                                 },
                                                 "userID": {
@@ -402,7 +465,10 @@
         },
         "/auth/device": {
             "post": {
+                "operationId": "requestDeviceChallenge",
                 "summary": "Request device auth challenge",
+                "description": "Initiate device-key authentication by submitting a deviceID and signing key. Returns a challenge nonce to sign.",
+                "tags": ["auth"],
                 "requestBody": {
                     "content": {
                         "application/msgpack": {
@@ -446,7 +512,10 @@
         },
         "/auth/device/verify": {
             "post": {
+                "operationId": "verifyDeviceChallenge",
                 "summary": "Verify device auth challenge",
+                "description": "Submit the signed challenge to complete device-key authentication. Returns a JWT token and the authenticated user profile.",
+                "tags": ["auth"],
                 "requestBody": {
                     "content": {
                         "application/msgpack": {
@@ -481,7 +550,6 @@
                                             "properties": {
                                                 "lastSeen": {
                                                     "type": "string",
-                                                    "format": "date-time",
                                                     "description": "Last activity timestamp"
                                                 },
                                                 "userID": {
@@ -511,7 +579,10 @@
         },
         "/register": {
             "post": {
+                "operationId": "register",
                 "summary": "Register a new user account",
+                "description": "Create a new user account with cryptographic device registration. Requires a signed registration payload with Ed25519 keys.",
+                "tags": ["auth"],
                 "requestBody": {
                     "content": {
                         "application/msgpack": {
@@ -576,7 +647,6 @@
                                     "properties": {
                                         "lastSeen": {
                                             "type": "string",
-                                            "format": "date-time",
                                             "description": "Last activity timestamp"
                                         },
                                         "userID": {
@@ -603,7 +673,10 @@
         },
         "/whoami": {
             "post": {
+                "operationId": "whoami",
                 "summary": "Get current session info",
+                "description": "Return the current authenticated session including token expiry and user profile.",
+                "tags": ["auth"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -628,7 +701,6 @@
                                             "properties": {
                                                 "lastSeen": {
                                                     "type": "string",
-                                                    "format": "date-time",
                                                     "description": "Last activity timestamp"
                                                 },
                                                 "userID": {
@@ -658,7 +730,10 @@
         },
         "/goodbye": {
             "post": {
+                "operationId": "logout",
                 "summary": "Logout (invalidate token)",
+                "description": "Invalidate the current JWT token, ending the session.",
+                "tags": ["auth"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -673,7 +748,10 @@
         },
         "/token/{tokenType}": {
             "get": {
+                "operationId": "getActionToken",
                 "summary": "Request an action token",
+                "description": "Request a scoped, time-limited action token for operations like registration, file upload, or device pairing.",
+                "tags": ["tokens"],
                 "parameters": [
                     {
                         "schema": {
@@ -706,12 +784,40 @@
                                             "description": "Token value"
                                         },
                                         "scope": {
-                                            "type": "number",
+                                            "anyOf": [
+                                                {
+                                                    "type": "number",
+                                                    "enum": [0]
+                                                },
+                                                {
+                                                    "type": "number",
+                                                    "enum": [1]
+                                                },
+                                                {
+                                                    "type": "number",
+                                                    "enum": [2]
+                                                },
+                                                {
+                                                    "type": "number",
+                                                    "enum": [3]
+                                                },
+                                                {
+                                                    "type": "number",
+                                                    "enum": [4]
+                                                },
+                                                {
+                                                    "type": "number",
+                                                    "enum": [5]
+                                                },
+                                                {
+                                                    "type": "number",
+                                                    "enum": [6]
+                                                }
+                                            ],
                                             "description": "Token scope"
                                         },
                                         "time": {
                                             "type": "string",
-                                            "format": "date-time",
                                             "description": "Token creation time"
                                         }
                                     },
@@ -726,7 +832,10 @@
         },
         "/user/{id}": {
             "get": {
+                "operationId": "getUser",
                 "summary": "Get user profile",
+                "description": "Retrieve the public profile for a user by their ID.",
+                "tags": ["users"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -752,7 +861,6 @@
                                     "properties": {
                                         "lastSeen": {
                                             "type": "string",
-                                            "format": "date-time",
                                             "description": "Last activity timestamp"
                                         },
                                         "userID": {
@@ -782,7 +890,10 @@
         },
         "/user/{id}/devices": {
             "get": {
+                "operationId": "listUserDevices",
                 "summary": "List devices for a user",
+                "description": "List all registered devices for the given user, including signing keys and login timestamps.",
+                "tags": ["users"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -852,7 +963,10 @@
         },
         "/user/{id}/servers": {
             "get": {
+                "operationId": "listUserServers",
                 "summary": "List servers for a user",
+                "description": "List all chat servers the given user is a member of.",
+                "tags": ["users"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -903,7 +1017,10 @@
         },
         "/user/{id}/permissions": {
             "get": {
+                "operationId": "listUserPermissions",
                 "summary": "Get permissions for a user",
+                "description": "List all permission grants for the given user across all resources.",
+                "tags": ["users"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -968,7 +1085,10 @@
         },
         "/server/{id}": {
             "get": {
+                "operationId": "getServer",
                 "summary": "Get a server",
+                "description": "Retrieve details for a chat server by its ID.",
+                "tags": ["servers"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1013,8 +1133,11 @@
                     }
                 }
             },
-            "delete": {
-                "summary": "Delete a server",
+            "post": {
+                "operationId": "createServer",
+                "summary": "Create a server",
+                "description": "Create a new chat server. The path parameter is used as the server name.",
+                "tags": ["servers"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1027,34 +1150,6 @@
                         },
                         "required": true,
                         "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Server deleted"
-                    },
-                    "401": {
-                        "description": "Insufficient permissions"
-                    }
-                }
-            }
-        },
-        "/server/{name}": {
-            "post": {
-                "summary": "Create a server",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true,
-                        "name": "name",
                         "in": "path"
                     }
                 ],
@@ -1086,11 +1181,43 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "operationId": "deleteServer",
+                "summary": "Delete a server",
+                "description": "Permanently delete a chat server. Requires owner-level permissions.",
+                "tags": ["servers"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Server deleted"
+                    },
+                    "401": {
+                        "description": "Insufficient permissions"
+                    }
+                }
             }
         },
         "/server/{id}/channels": {
             "get": {
+                "operationId": "listServerChannels",
                 "summary": "List channels in a server",
+                "description": "List all channels belonging to the given server.",
+                "tags": ["servers"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1143,7 +1270,10 @@
                 }
             },
             "post": {
+                "operationId": "createChannel",
                 "summary": "Create a channel",
+                "description": "Create a new channel within the given server.",
+                "tags": ["servers"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1210,7 +1340,10 @@
         },
         "/channel/{id}": {
             "get": {
+                "operationId": "getChannel",
                 "summary": "Get a channel",
+                "description": "Retrieve details for a channel by its ID.",
+                "tags": ["channels"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1260,7 +1393,10 @@
                 }
             },
             "delete": {
+                "operationId": "deleteChannel",
                 "summary": "Delete a channel",
+                "description": "Permanently delete a channel. Requires sufficient permissions on the parent server.",
+                "tags": ["channels"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1288,7 +1424,10 @@
         },
         "/invite/{inviteID}": {
             "get": {
+                "operationId": "getInvite",
                 "summary": "Get invite details",
+                "description": "Retrieve details for a server invite, including expiration and target server.",
+                "tags": ["invites"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1346,7 +1485,10 @@
                 }
             },
             "patch": {
+                "operationId": "acceptInvite",
                 "summary": "Accept an invite",
+                "description": "Accept a server invite, granting the authenticated user membership and returning the new permission grant.",
+                "tags": ["invites"],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1408,7 +1550,10 @@
         },
         "/healthz": {
             "get": {
+                "operationId": "healthCheck",
                 "summary": "Health check",
+                "description": "Returns server and database readiness status. Used by load balancers and monitoring.",
+                "tags": ["health"],
                 "responses": {
                     "200": {
                         "description": "Server health",

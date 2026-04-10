@@ -6,7 +6,21 @@
         "description": "Real-time encrypted chat protocol for vex.wtf.\nMessages are serialized using msgpack over WebSocket.",
         "license": {
             "name": "AGPL-3.0-or-later"
-        }
+        },
+        "contact": {
+            "name": "Vex Protocol",
+            "url": "https://github.com/vex-protocol/types-js"
+        },
+        "tags": [
+            {
+                "name": "auth",
+                "description": "Authentication and session management"
+            },
+            {
+                "name": "messaging",
+                "description": "Real-time message exchange"
+            }
+        ]
     },
     "servers": {
         "production": {
@@ -83,6 +97,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Authentication",
+            "description": "Send a JWT bearer token to authenticate the WebSocket session.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/auth"
@@ -95,6 +110,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Auth response",
+            "description": "Send a signed challenge response to complete device-key authentication.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/response"
@@ -107,6 +123,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Resource operation",
+            "description": "Send a CRUD operation targeting a specific resource type (mail, preKeys, etc.).",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/resource"
@@ -119,6 +136,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Mail receipt",
+            "description": "Send a receipt acknowledging that a mail message has been received and processed.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/receipt"
@@ -131,6 +149,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Keepalive ping",
+            "description": "Send a keepalive ping to prevent the WebSocket connection from timing out.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/ping"
@@ -143,6 +162,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Auth challenge",
+            "description": "Receive a challenge nonce from the server that must be signed with the device key.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/challenge"
@@ -155,6 +175,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Auth success",
+            "description": "Receive confirmation that the WebSocket session has been successfully authenticated.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/authorized"
@@ -167,6 +188,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Operation success",
+            "description": "Receive the server response for a successfully completed resource operation.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/success"
@@ -179,6 +201,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Operation error",
+            "description": "Receive an error response when a resource operation fails.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/error"
@@ -191,6 +214,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Server notification",
+            "description": "Receive a server-initiated push notification for events like new mail, server changes, or permission updates.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/notify"
@@ -203,6 +227,7 @@
                 "$ref": "#/channels/chat"
             },
             "summary": "Keepalive pong",
+            "description": "Receive a pong response from the server confirming the connection is alive.",
             "messages": [
                 {
                     "$ref": "#/channels/chat/messages/pong"
@@ -280,7 +305,7 @@
                         },
                         "type": {
                             "type": "string",
-                            "description": "Message type discriminator"
+                            "const": "resource"
                         },
                         "action": {
                             "type": "string",
@@ -318,7 +343,7 @@
                         },
                         "type": {
                             "type": "string",
-                            "description": "Message type discriminator"
+                            "const": "receipt"
                         },
                         "nonce": {
                             "description": "Mail nonce being acknowledged"
@@ -404,7 +429,7 @@
                         },
                         "type": {
                             "type": "string",
-                            "description": "Message type discriminator"
+                            "const": "success"
                         },
                         "data": {
                             "description": "Response payload"
@@ -433,7 +458,7 @@
                         },
                         "type": {
                             "type": "string",
-                            "description": "Message type discriminator"
+                            "const": "error"
                         },
                         "data": {
                             "description": "Error context"
@@ -462,7 +487,7 @@
                         },
                         "type": {
                             "type": "string",
-                            "description": "Message type discriminator"
+                            "const": "notify"
                         },
                         "data": {
                             "description": "Event payload"
