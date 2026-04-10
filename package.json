@@ -1,6 +1,6 @@
 {
     "name": "@vex-chat/types",
-    "version": "2.0.0",
+    "version": "1.0.1",
     "description": "Wire protocol types for the Vex encrypted chat platform",
     "type": "module",
     "sideEffects": false,
@@ -44,6 +44,7 @@
         "openapi": "npx tsx scripts/generate-openapi.ts",
         "asyncapi": "npx tsx scripts/generate-asyncapi.ts",
         "specs": "npm run openapi && npm run asyncapi",
+        "ci:version": "changeset version && npm run specs",
         "lint:specs": "spectral lint openapi.json asyncapi.json",
         "specs:check": "npm run specs && git diff --exit-code openapi.json asyncapi.json",
         "test:types": "tsc --noEmit",
