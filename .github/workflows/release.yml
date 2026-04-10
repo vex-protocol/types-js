@@ -16,7 +16,10 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-            id-token: write
+            # TODO(@dream): re-enable when switching back to npm trusted publishing.
+            # Requires a security key on the npmjs.com account to configure the
+            # trusted publisher. Revert this block and the publish step below.
+            # id-token: write
         env:
             npm_config_save_exact: "true"
             npm_config_engine_strict: "true"
@@ -40,15 +43,25 @@ jobs:
             - name: Check dependency licenses
               run: npm run license:check
 
+            # TODO(@dream): restore trusted publishing once a security key is set up
+            # on the npmjs.com account. To revert:
+            #   1. Change `publish` back to: npx changeset publish --provenance --access public
+            #   2. Re-enable `id-token: write` in the permissions block above
+            #   3. Remove the NPM_TOKEN env var below
+            #   4. Configure the trusted publisher at
+            #      https://www.npmjs.com/package/@vex-chat/types/access
+            #   5. Add `npm install -g npm@latest` step before this one to guarantee npm >= 11.5.1
             - name: Create Release PR or Publish
               id: changesets
               uses: changesets/action@e87c8ed249971350e47fab7515075f44eb134e5b # v1.7.0
               with:
-                  publish: npx changeset publish --provenance --access public
+                  publish: npx changeset publish --access public
                   title: "chore: version packages"
                   commit: "chore: version packages"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  # TODO(@dream): remove when switching back to trusted publishing
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Generate SBOM
               if: steps.changesets.outputs.published == 'true'
