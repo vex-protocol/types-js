@@ -3,7 +3,11 @@
  *
  * Run: npx tsx scripts/generate-asyncapi.ts
  */
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
+
+const { version: packageVersion } = JSON.parse(
+    readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+) as { version: string };
 
 import { z } from "zod/v4";
 
@@ -186,7 +190,7 @@ const doc = {
     asyncapi: "3.0.0",
     info: {
         title: "Vex Protocol",
-        version: "1.0.0",
+        version: packageVersion,
         description:
             "Real-time encrypted chat protocol for vex.wtf.\nMessages are serialized using msgpack over WebSocket.",
         license: { name: "AGPL-3.0-or-later" },

@@ -3,7 +3,11 @@
  *
  * Run: tsx scripts/generate-openapi.ts
  */
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
+
+const { version: packageVersion } = JSON.parse(
+    readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+) as { version: string };
 
 import { z } from "zod/v4";
 import {
@@ -545,7 +549,7 @@ const doc = generator.generateDocument({
     openapi: "3.1.0",
     info: {
         title: "Vex Protocol API",
-        version: "1.0.0",
+        version: packageVersion,
         description:
             "REST API for the Vex encrypted chat platform. Messages are serialized using msgpack.",
         license: { name: "AGPL-3.0-or-later" },

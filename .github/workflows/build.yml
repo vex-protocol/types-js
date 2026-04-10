@@ -79,7 +79,14 @@ jobs:
                   SOCKET_SECURITY_API_KEY: ${{ secrets.SOCKET_API_KEY }}
 
             - name: Check for changeset
-              run: npx changeset status --since=origin/master
+              run: |
+                  OLD=$(git show origin/master:package.json | node -pe "JSON.parse(require('fs').readFileSync(0,'utf8')).version")
+                  NEW=$(node -pe "require('./package.json').version")
+                  if [ "$OLD" = "$NEW" ]; then
+                      npx changeset status --since=origin/master
+                  else
+                      echo "package.json version bumped ($OLD → $NEW) — skipping changeset check."
+                  fi
 
             - name: Package
               run: npm pack

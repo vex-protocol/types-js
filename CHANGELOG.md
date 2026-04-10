@@ -4,7 +4,7 @@
 
 ### Major Changes
 
-- 6f8fa2a: Wire protocol is now defined by Zod schemas, with OpenAPI 3.1 and AsyncAPI 3.0 documents generated from them and shipped as subpath exports. Every exported type gains a runtime validator, and interfaces are the source of truth.
+- Wire protocol is now defined by Zod schemas, with OpenAPI 3.1 and AsyncAPI 3.0 documents generated from them and shipped as subpath exports. Every exported type gains a runtime validator, and interfaces are the source of truth.
 
     ### New features
     - **Runtime-validated schemas**. Every type is paired with an `XSchema` that validates at runtime: `UserSchema.parse(data)`, `KeyBundleSchema.safeParse(data)`, etc. Backed by Zod 4.x (new production dependency). The old compile-time-only interfaces remain exported for consumers that don't need validation.
