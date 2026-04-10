@@ -1,12 +1,12 @@
 import { z } from "zod/v4";
 
 /**
- * Uint8Array schema. Uses `z.custom` instead of `z.instanceof` to avoid
- * the `Uint8Array<ArrayBuffer>` vs `Uint8Array<ArrayBufferLike>` generic
- * mismatch between TS 6.x's strict generic inference and tweetnacl/nacl.
+ * Uint8Array schema. Uses `z.custom` instead of `z.instanceof` because
+ * `z.instanceof(Uint8Array)` infers `Uint8Array<ArrayBuffer>`, which is
+ * not assignable to the default `Uint8Array<ArrayBufferLike>` used by
+ * the interfaces (TS 6's strict generic inference).
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const uint8: z.ZodType<Uint8Array<any>> = z.custom<Uint8Array<any>>(
+export const uint8: z.ZodType<Uint8Array> = z.custom<Uint8Array>(
     (val) => val instanceof Uint8Array,
 );
 
