@@ -65,5 +65,14 @@ export default tseslint.config(
             ],
         },
     },
+    {
+        // Type-level assertion files — bindings exist purely for compile-time
+        // checks (referenced via `typeof` in a tuple export). eslint counts
+        // those as type-only uses and would flag every binding as unused.
+        files: ["**/*.test-d.ts"],
+        rules: {
+            "@typescript-eslint/no-unused-vars": "off",
+        },
+    },
     eslintConfigPrettier,
 );
