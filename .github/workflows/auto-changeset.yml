@@ -73,7 +73,7 @@ jobs:
 
             - name: Generate changeset with Claude
               if: steps.check.outputs.exists == 'false'
-              uses: anthropics/claude-code-action@657fb7c9c986158a19624b357bcbc8c6deb83598 # v1
+              uses: anthropics/claude-code-action@21302532c2959a4f8f5e445004f617ef8b7b1dd7 # v1
               with:
                   anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
                   prompt: |
