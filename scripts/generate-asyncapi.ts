@@ -246,7 +246,7 @@ const doc = {
     },
 };
 
-writeFileSync("asyncapi.json", JSON.stringify(doc, null, 2));
+writeFileSync("asyncapi.json", JSON.stringify(doc, null, 4) + "\n");
 console.log(
     `Generated asyncapi.json with ${messages.length} message types (${messages.filter((m) => m.direction === "send").length} send, ${messages.filter((m) => m.direction === "receive").length} receive)`,
 );

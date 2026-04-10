@@ -578,7 +578,7 @@ const doc = generator.generateDocument({
     ],
 });
 
-writeFileSync("openapi.json", JSON.stringify(doc, null, 2));
+writeFileSync("openapi.json", JSON.stringify(doc, null, 4) + "\n");
 console.log(
     `Generated openapi.json with ${Object.keys(doc.paths ?? {}).length} paths`,
 );

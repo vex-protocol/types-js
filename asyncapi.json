@@ -261,7 +261,10 @@
                             "const": "auth"
                         }
                     },
-                    "required": ["token", "type"],
+                    "required": [
+                        "token",
+                        "type"
+                    ],
                     "additionalProperties": false,
                     "description": "Initial authentication message with JWT token"
                 }
@@ -286,7 +289,11 @@
                             "description": "Signed response bytes"
                         }
                     },
-                    "required": ["transmissionID", "type", "signed"],
+                    "required": [
+                        "transmissionID",
+                        "type",
+                        "signed"
+                    ],
                     "additionalProperties": false,
                     "description": "Signed challenge response for device authentication"
                 }
@@ -349,7 +356,11 @@
                             "description": "Mail nonce being acknowledged"
                         }
                     },
-                    "required": ["transmissionID", "type", "nonce"],
+                    "required": [
+                        "transmissionID",
+                        "type",
+                        "nonce"
+                    ],
                     "additionalProperties": false,
                     "description": "Acknowledge receipt of a mail message"
                 }
@@ -367,7 +378,9 @@
                             "const": "ping"
                         }
                     },
-                    "required": ["type"],
+                    "required": [
+                        "type"
+                    ],
                     "additionalProperties": false,
                     "description": "Client keepalive ping"
                 }
@@ -392,7 +405,11 @@
                             "description": "Challenge nonce bytes"
                         }
                     },
-                    "required": ["transmissionID", "type", "challenge"],
+                    "required": [
+                        "transmissionID",
+                        "type",
+                        "challenge"
+                    ],
                     "additionalProperties": false,
                     "description": "Server sends a challenge nonce for device authentication"
                 }
@@ -410,7 +427,9 @@
                             "const": "authorized"
                         }
                     },
-                    "required": ["type"],
+                    "required": [
+                        "type"
+                    ],
                     "additionalProperties": false,
                     "description": "Server confirms authentication succeeded"
                 }
@@ -439,7 +458,11 @@
                             "type": "string"
                         }
                     },
-                    "required": ["transmissionID", "type", "data"],
+                    "required": [
+                        "transmissionID",
+                        "type",
+                        "data"
+                    ],
                     "additionalProperties": false,
                     "description": "Server response to a successful resource operation"
                 }
@@ -468,7 +491,11 @@
                             "description": "Error message"
                         }
                     },
-                    "required": ["transmissionID", "type", "error"],
+                    "required": [
+                        "transmissionID",
+                        "type",
+                        "error"
+                    ],
                     "additionalProperties": false,
                     "description": "Server response to a failed operation"
                 }
@@ -497,7 +524,11 @@
                             "description": "Notification event type"
                         }
                     },
-                    "required": ["transmissionID", "type", "event"],
+                    "required": [
+                        "transmissionID",
+                        "type",
+                        "event"
+                    ],
                     "additionalProperties": false,
                     "description": "Server push notification (new mail, server change, permission update)"
                 }
@@ -515,7 +546,9 @@
                             "const": "pong"
                         }
                     },
-                    "required": ["type"],
+                    "required": [
+                        "type"
+                    ],
                     "additionalProperties": false,
                     "description": "Server keepalive pong response"
                 }

@@ -77,7 +77,11 @@
                         "description": "Display username"
                     }
                 },
-                "required": ["lastSeen", "userID", "username"],
+                "required": [
+                    "lastSeen",
+                    "userID",
+                    "username"
+                ],
                 "description": "Public user profile"
             },
             "Device": {
@@ -134,7 +138,10 @@
                         "description": "Unique server identifier"
                     }
                 },
-                "required": ["name", "serverID"],
+                "required": [
+                    "name",
+                    "serverID"
+                ],
                 "description": "Chat server"
             },
             "Channel": {
@@ -153,7 +160,11 @@
                         "description": "Parent server ID"
                     }
                 },
-                "required": ["channelID", "name", "serverID"],
+                "required": [
+                    "channelID",
+                    "name",
+                    "serverID"
+                ],
                 "description": "Server channel"
             },
             "Permission": {
@@ -209,7 +220,12 @@
                         "description": "Target server ID"
                     }
                 },
-                "required": ["expiration", "inviteID", "owner", "serverID"],
+                "required": [
+                    "expiration",
+                    "inviteID",
+                    "owner",
+                    "serverID"
+                ],
                 "description": "Server invitation"
             },
             "Emoji": {
@@ -228,7 +244,11 @@
                         "description": "Server ID that owns this emoji"
                     }
                 },
-                "required": ["emojiID", "name", "owner"],
+                "required": [
+                    "emojiID",
+                    "name",
+                    "owner"
+                ],
                 "description": "Custom server emoji"
             },
             "FileSQL": {
@@ -247,7 +267,11 @@
                         "description": "File owner user ID"
                     }
                 },
-                "required": ["fileID", "nonce", "owner"],
+                "required": [
+                    "fileID",
+                    "nonce",
+                    "owner"
+                ],
                 "description": "File database record"
             },
             "ActionToken": {
@@ -261,31 +285,45 @@
                         "anyOf": [
                             {
                                 "type": "number",
-                                "enum": [0]
+                                "enum": [
+                                    0
+                                ]
                             },
                             {
                                 "type": "number",
-                                "enum": [1]
+                                "enum": [
+                                    1
+                                ]
                             },
                             {
                                 "type": "number",
-                                "enum": [2]
+                                "enum": [
+                                    2
+                                ]
                             },
                             {
                                 "type": "number",
-                                "enum": [3]
+                                "enum": [
+                                    3
+                                ]
                             },
                             {
                                 "type": "number",
-                                "enum": [4]
+                                "enum": [
+                                    4
+                                ]
                             },
                             {
                                 "type": "number",
-                                "enum": [5]
+                                "enum": [
+                                    5
+                                ]
                             },
                             {
                                 "type": "number",
-                                "enum": [6]
+                                "enum": [
+                                    6
+                                ]
                             }
                         ],
                         "description": "Token scope"
@@ -295,7 +333,11 @@
                         "description": "Token creation time"
                     }
                 },
-                "required": ["key", "scope", "time"],
+                "required": [
+                    "key",
+                    "scope",
+                    "time"
+                ],
                 "description": "Scoped action token with TTL"
             },
             "DevicePayload": {
@@ -398,7 +440,9 @@
                 "operationId": "login",
                 "summary": "Login with username and password",
                 "description": "Authenticate with username and password credentials. Returns a JWT token and the authenticated user profile.",
-                "tags": ["auth"],
+                "tags": [
+                    "auth"
+                ],
                 "requestBody": {
                     "content": {
                         "application/msgpack": {
@@ -412,7 +456,10 @@
                                         "type": "string"
                                     }
                                 },
-                                "required": ["username", "password"]
+                                "required": [
+                                    "username",
+                                    "password"
+                                ]
                             }
                         }
                     }
@@ -452,7 +499,10 @@
                                             "description": "Public user profile"
                                         }
                                     },
-                                    "required": ["token", "user"]
+                                    "required": [
+                                        "token",
+                                        "user"
+                                    ]
                                 }
                             }
                         }
@@ -468,7 +518,9 @@
                 "operationId": "requestDeviceChallenge",
                 "summary": "Request device auth challenge",
                 "description": "Initiate device-key authentication by submitting a deviceID and signing key. Returns a challenge nonce to sign.",
-                "tags": ["auth"],
+                "tags": [
+                    "auth"
+                ],
                 "requestBody": {
                     "content": {
                         "application/msgpack": {
@@ -482,7 +534,10 @@
                                         "type": "string"
                                     }
                                 },
-                                "required": ["deviceID", "signKey"]
+                                "required": [
+                                    "deviceID",
+                                    "signKey"
+                                ]
                             }
                         }
                     }
@@ -502,7 +557,10 @@
                                             "type": "string"
                                         }
                                     },
-                                    "required": ["challenge", "challengeID"]
+                                    "required": [
+                                        "challenge",
+                                        "challengeID"
+                                    ]
                                 }
                             }
                         }
@@ -515,7 +573,9 @@
                 "operationId": "verifyDeviceChallenge",
                 "summary": "Verify device auth challenge",
                 "description": "Submit the signed challenge to complete device-key authentication. Returns a JWT token and the authenticated user profile.",
-                "tags": ["auth"],
+                "tags": [
+                    "auth"
+                ],
                 "requestBody": {
                     "content": {
                         "application/msgpack": {
@@ -529,7 +589,10 @@
                                         "type": "string"
                                     }
                                 },
-                                "required": ["challengeID", "signed"]
+                                "required": [
+                                    "challengeID",
+                                    "signed"
+                                ]
                             }
                         }
                     }
@@ -569,7 +632,10 @@
                                             "description": "Public user profile"
                                         }
                                     },
-                                    "required": ["token", "user"]
+                                    "required": [
+                                        "token",
+                                        "user"
+                                    ]
                                 }
                             }
                         }
@@ -582,7 +648,9 @@
                 "operationId": "register",
                 "summary": "Register a new user account",
                 "description": "Create a new user account with cryptographic device registration. Requires a signed registration payload with Ed25519 keys.",
-                "tags": ["auth"],
+                "tags": [
+                    "auth"
+                ],
                 "requestBody": {
                     "content": {
                         "application/msgpack": {
@@ -676,7 +744,9 @@
                 "operationId": "whoami",
                 "summary": "Get current session info",
                 "description": "Return the current authenticated session including token expiry and user profile.",
-                "tags": ["auth"],
+                "tags": [
+                    "auth"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -720,7 +790,11 @@
                                             "description": "Public user profile"
                                         }
                                     },
-                                    "required": ["exp", "token", "user"]
+                                    "required": [
+                                        "exp",
+                                        "token",
+                                        "user"
+                                    ]
                                 }
                             }
                         }
@@ -733,7 +807,9 @@
                 "operationId": "logout",
                 "summary": "Logout (invalidate token)",
                 "description": "Invalidate the current JWT token, ending the session.",
-                "tags": ["auth"],
+                "tags": [
+                    "auth"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -751,7 +827,9 @@
                 "operationId": "getActionToken",
                 "summary": "Request an action token",
                 "description": "Request a scoped, time-limited action token for operations like registration, file upload, or device pairing.",
-                "tags": ["tokens"],
+                "tags": [
+                    "tokens"
+                ],
                 "parameters": [
                     {
                         "schema": {
@@ -787,31 +865,45 @@
                                             "anyOf": [
                                                 {
                                                     "type": "number",
-                                                    "enum": [0]
+                                                    "enum": [
+                                                        0
+                                                    ]
                                                 },
                                                 {
                                                     "type": "number",
-                                                    "enum": [1]
+                                                    "enum": [
+                                                        1
+                                                    ]
                                                 },
                                                 {
                                                     "type": "number",
-                                                    "enum": [2]
+                                                    "enum": [
+                                                        2
+                                                    ]
                                                 },
                                                 {
                                                     "type": "number",
-                                                    "enum": [3]
+                                                    "enum": [
+                                                        3
+                                                    ]
                                                 },
                                                 {
                                                     "type": "number",
-                                                    "enum": [4]
+                                                    "enum": [
+                                                        4
+                                                    ]
                                                 },
                                                 {
                                                     "type": "number",
-                                                    "enum": [5]
+                                                    "enum": [
+                                                        5
+                                                    ]
                                                 },
                                                 {
                                                     "type": "number",
-                                                    "enum": [6]
+                                                    "enum": [
+                                                        6
+                                                    ]
                                                 }
                                             ],
                                             "description": "Token scope"
@@ -821,7 +913,11 @@
                                             "description": "Token creation time"
                                         }
                                     },
-                                    "required": ["key", "scope", "time"],
+                                    "required": [
+                                        "key",
+                                        "scope",
+                                        "time"
+                                    ],
                                     "description": "Scoped action token with TTL"
                                 }
                             }
@@ -835,7 +931,9 @@
                 "operationId": "getUser",
                 "summary": "Get user profile",
                 "description": "Retrieve the public profile for a user by their ID.",
-                "tags": ["users"],
+                "tags": [
+                    "users"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -893,7 +991,9 @@
                 "operationId": "listUserDevices",
                 "summary": "List devices for a user",
                 "description": "List all registered devices for the given user, including signing keys and login timestamps.",
-                "tags": ["users"],
+                "tags": [
+                    "users"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -966,7 +1066,9 @@
                 "operationId": "listUserServers",
                 "summary": "List servers for a user",
                 "description": "List all chat servers the given user is a member of.",
-                "tags": ["users"],
+                "tags": [
+                    "users"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1005,7 +1107,10 @@
                                                 "description": "Unique server identifier"
                                             }
                                         },
-                                        "required": ["name", "serverID"],
+                                        "required": [
+                                            "name",
+                                            "serverID"
+                                        ],
                                         "description": "Chat server"
                                     }
                                 }
@@ -1020,7 +1125,9 @@
                 "operationId": "listUserPermissions",
                 "summary": "Get permissions for a user",
                 "description": "List all permission grants for the given user across all resources.",
-                "tags": ["users"],
+                "tags": [
+                    "users"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1088,7 +1195,9 @@
                 "operationId": "getServer",
                 "summary": "Get a server",
                 "description": "Retrieve details for a chat server by its ID.",
-                "tags": ["servers"],
+                "tags": [
+                    "servers"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1125,7 +1234,10 @@
                                             "description": "Unique server identifier"
                                         }
                                     },
-                                    "required": ["name", "serverID"],
+                                    "required": [
+                                        "name",
+                                        "serverID"
+                                    ],
                                     "description": "Chat server"
                                 }
                             }
@@ -1137,7 +1249,9 @@
                 "operationId": "createServer",
                 "summary": "Create a server",
                 "description": "Create a new chat server. The path parameter is used as the server name.",
-                "tags": ["servers"],
+                "tags": [
+                    "servers"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1174,7 +1288,10 @@
                                             "description": "Unique server identifier"
                                         }
                                     },
-                                    "required": ["name", "serverID"],
+                                    "required": [
+                                        "name",
+                                        "serverID"
+                                    ],
                                     "description": "Chat server"
                                 }
                             }
@@ -1186,7 +1303,9 @@
                 "operationId": "deleteServer",
                 "summary": "Delete a server",
                 "description": "Permanently delete a chat server. Requires owner-level permissions.",
-                "tags": ["servers"],
+                "tags": [
+                    "servers"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1217,7 +1336,9 @@
                 "operationId": "listServerChannels",
                 "summary": "List channels in a server",
                 "description": "List all channels belonging to the given server.",
-                "tags": ["servers"],
+                "tags": [
+                    "servers"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1273,7 +1394,9 @@
                 "operationId": "createChannel",
                 "summary": "Create a channel",
                 "description": "Create a new channel within the given server.",
-                "tags": ["servers"],
+                "tags": [
+                    "servers"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1299,7 +1422,9 @@
                                         "type": "string"
                                     }
                                 },
-                                "required": ["name"]
+                                "required": [
+                                    "name"
+                                ]
                             }
                         }
                     }
@@ -1343,7 +1468,9 @@
                 "operationId": "getChannel",
                 "summary": "Get a channel",
                 "description": "Retrieve details for a channel by its ID.",
-                "tags": ["channels"],
+                "tags": [
+                    "channels"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1396,7 +1523,9 @@
                 "operationId": "deleteChannel",
                 "summary": "Delete a channel",
                 "description": "Permanently delete a channel. Requires sufficient permissions on the parent server.",
-                "tags": ["channels"],
+                "tags": [
+                    "channels"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1427,7 +1556,9 @@
                 "operationId": "getInvite",
                 "summary": "Get invite details",
                 "description": "Retrieve details for a server invite, including expiration and target server.",
-                "tags": ["invites"],
+                "tags": [
+                    "invites"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1488,7 +1619,9 @@
                 "operationId": "acceptInvite",
                 "summary": "Accept an invite",
                 "description": "Accept a server invite, granting the authenticated user membership and returning the new permission grant.",
-                "tags": ["invites"],
+                "tags": [
+                    "invites"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -1553,7 +1686,9 @@
                 "operationId": "healthCheck",
                 "summary": "Health check",
                 "description": "Returns server and database readiness status. Used by load balancers and monitoring.",
-                "tags": ["health"],
+                "tags": [
+                    "health"
+                ],
                 "responses": {
                     "200": {
                         "description": "Server health",
@@ -1569,7 +1704,10 @@
                                             "type": "boolean"
                                         }
                                     },
-                                    "required": ["dbReady", "ok"]
+                                    "required": [
+                                        "dbReady",
+                                        "ok"
+                                    ]
                                 }
                             }
                         }
