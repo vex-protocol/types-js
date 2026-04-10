@@ -18,7 +18,7 @@ Wire protocol is now defined by Zod schemas, with OpenAPI 3.1 and AsyncAPI 3.0 d
 - **Date fields migrate from `Date` objects to ISO 8601 strings** on the wire. Timestamp fields on all messages, records, and tokens are now `string`. Apps convert to `Date` at the display layer.
 - **`ISucessMsg` typo fixed** → `SuccessMsg` (type) / `SuccessMsgSchema` (schema).
 - **`KeyStore` and `StoredCredentials` removed** — these were platform-storage concerns, not wire types. They have moved to `@vex-chat/libvex-js`. Consumers that imported them from `@vex-chat/types` should update their import.
-- **`zod` is now a required production dependency.** Consumers on package managers that don't auto-install `dependencies` need to add it explicitly. No other peer dependencies beyond the existing optional `tweetnacl`.
+- **`zod` is now a required production dependency.** Consumers on package managers that don't auto-install `dependencies` need to add it explicitly. No peer dependencies.
 - **`PreKeysWS` is now an alias for `KeyBundleEntry`** (was a duplicated shape).
 - **Package description changed** from "Types for vex" to "Wire protocol types for the Vex encrypted chat platform" (metadata only; not an API change but visible in `npm view`).
 

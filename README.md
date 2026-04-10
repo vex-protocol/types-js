@@ -27,7 +27,7 @@ Wire protocol types for the [Vex](https://vex.wtf) encrypted chat platform. Used
 npm install @vex-chat/types
 ```
 
-`zod` is a required runtime dependency (auto-installed). `tweetnacl` is an optional peer dependency — only needed if you use the key-bundle types directly.
+`zod` is a required runtime dependency (auto-installed). No peer dependencies.
 
 ## Usage
 
